@@ -50,12 +50,42 @@ class TestCreateRoom(unittest.TestCase):
 		self.assertRaises(ValueError, self.living_space.create_new, 111)
 
 
+
 class TestPerson(unittest.TestCase):
 	"""Test Person added"""
 
 	def setUp(self):
-		self.new_fellow = Fellow()
-		self.new_staff = Staff()
+		self.person = Person()
+		self.fellow = Fellow()
+		self.staff = Staff()
+
+	def test_person_type(self):
+		person = Person()
+		post = Person.position
+		self.assertEqual('FELLOW' or 'STAFF', post, 
+			msg = 'Wrong position specified')
 
 	def test_adding_fellow(self):
-		self.new_fellow.add()
+		initial_count_fellows = len(self.fellow.total)
+		new_fellow = self.fellow.add("Barney", "FELLOW", "Y")
+		self.assertTrue(new_fellow)
+		new_count_fellows= len(self.fellow.total)
+		self.assertEqual(new_count_fellows - initial_count_fellows, 1, 
+			msg = 'Failed to add new Fellow')
+
+		
+
+	def test_adding_staff(self):
+		initial_count_staff = len(self.staff.total)
+		new_staff = self.staff.add("Louis", "STAFF")
+		self.assertTrue(new_staff)
+		new_count_staff= len(self.fellow.total)
+		self.assertEqual(new_count_staff - initial_count_staff, 1, 
+			msg = 'Failed to add new Staff')
+
+
+
+
+
+if __name__ == '__main__':
+	unittest.main()
