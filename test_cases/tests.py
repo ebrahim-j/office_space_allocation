@@ -60,8 +60,7 @@ class TestPerson(unittest.TestCase):
 		self.staff = Staff()
 
 	def test_person_type(self):
-		person = Person()
-		post = Person.position
+		post = self.person.position
 		self.assertEqual('FELLOW' or 'STAFF', post, 
 			msg = 'Wrong position specified')
 
@@ -84,8 +83,6 @@ class TestPerson(unittest.TestCase):
 			msg = 'Failed to add new Staff')
 
 
-
-
-
 if __name__ == '__main__':
 	unittest.main()
+	
