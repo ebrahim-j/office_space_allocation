@@ -29,4 +29,3 @@ class TestPerson(unittest.TestCase):
 			self.fellow.name, 123)
 
 
-		

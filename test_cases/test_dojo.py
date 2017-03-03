@@ -1,8 +1,11 @@
 import unittest
 from app.dojo import Dojo
 
+
+class TestDojoFunctionalities(object):
+
 	def setUp(self):
-		the_dojo = Dojo()
+		self.the_dojo = Dojo()
 
 	def test_officespace_creation(self):
 		initial_count_offices = len(self.the_dojo.all_offices)
@@ -19,17 +22,17 @@ from app.dojo import Dojo
 			msg = 'No new living space created')
 
 	def test_adding_fellow(self):
-		initial_count_fellows = len(self.the_dojo.total_fellows)
+		initial_count_fellows = len(self.the_dojo.all_fellows)
 		new_fellow = self.the_dojo.add_person("Barney", "FELLOW", "N")
 		self.assertTrue(new_fellow)
-		new_count_fellows= len(self.the_dojo.total_fellows)
+		new_count_fellows= len(self.the_dojo.all_fellows)
 		self.assertEqual(new_count_fellows - initial_count_fellows, 1, 
 			msg = 'Failed to add new Fellow')		
 
 	def test_adding_staff(self):
-		initial_count_staff = len(self.the_dojo.total_staff)
+		initial_count_staff = len(self.the_dojo.all_staff)
 		new_staff = self.staff.add_person("Louis", "STAFF")
 		self.assertTrue(new_staff)
-		new_count_staff= len(self.the_dojo.total_staff)
+		new_count_staff= len(self.the_dojo.all_staff)
 		self.assertEqual(new_count_staff - initial_count_staff, 1, 
 			msg = 'Failed to add new Staff')
