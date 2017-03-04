@@ -1,3 +1,4 @@
+"""This file defines all functions for our office space allocation app"""
 from person import Person, Fellow, Staff
 from room import OfficeSpace, LivingSpace
 
@@ -10,25 +11,34 @@ class Dojo(object):
 		self.all_fellows = []
 		self.all_staff = []
 
-	def create_room(self, rm_type, rm_name):
-		"""Create a new room at the Dojo"""
-		if rm_type.lower() == 'office':
-			if not rm_name in self.all_offices:
-				new_office = OfficeSpace(rm_name)
-				self.all_offices.append(new_office)
-				print ("An {} called {} has been successfully created" .format(rm_type, rm_name))
-			else:
-				print ("An office with this name already exists!")
-		elif rm_type.lower() == 'living space':
-			if not rm_name in self.all_livingspace:
-				new_livingspace = LivingSpace(rm_name)
-				self.all_livingspace.append(new_livingspace)
-				print ("A {} called {} has been successfully created" .format(rm_type, rm_name))
-			else:
-				print ("A living space with this name already exists!")
-		else:
-			print ("Invalid room type!")
-
+	def create_room(self, rm_type, rm_names):
+		"""Create a new room, either office or living space at the Dojo. 
+		 Check whether a room with a similar name exits,
+		 before succesfully creating the room
+		 """
+		if rm_type.lower() == "office"	
+			for i in rm_names:
+				if isinstance(i,str):
+					name = i.lower()
+					if name in [office.name for office in self.all_offices]:
+					return ("This office already exists!")
+					new_office = OfficeSpace(name)
+					self.all_offices.append(new_office)
+					return ("An {} called {} has been successfully created" .format(rm_type, name))
+				else:
+					return ("'room_name' should be a string value!")
+		elif rm_type.lower() == "living space":
+			for i in rm_names:
+				if isinstance(i, str):
+					name = i.lower()
+					if name in [livingspace.name for livingspace in self.all_livingspace]:
+						return ("This living space already exists!")
+					new_livingspace = LivingSpace(name)
+					self.all_livingspace.append(new_livingspace)
+					return ("A {} called {} has been successfully created" .format(rm_type, name))
+				else:
+					return ("'room_name' should be a string value!")
+				
 	def add_person(self, name, role, wants_accomodation='N'):
 		"""Add a new person to the Dojo and allocate 
 		either office space or living space 
