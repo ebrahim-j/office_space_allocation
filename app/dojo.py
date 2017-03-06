@@ -3,6 +3,7 @@ from room import OfficeSpace, LivingSpace
 
 """This file defines all functions for our office space allocation app"""
 
+
 class Dojo(object):
 
 	def __init__(self):
@@ -10,7 +11,6 @@ class Dojo(object):
 		self.all_livingspace = []
 		self.all_fellows = []
 		self.all_staff = []
-
 
 	def create_room(self, rm_type, rm_names):
 		"""Create a new room, either office or living space at the Dojo. 
@@ -39,7 +39,6 @@ class Dojo(object):
 					return ("A {} called {} has been successfully created" .format(rm_type, name))
 				else:
 					return ("'room_name' should be a string value!")
-
 				
 	def add_person(self, name, role, wants_accomodation="N"):
 		"""Add a new person to the Dojo and allocate 
@@ -69,7 +68,6 @@ class Dojo(object):
 				return ("{} {} has been successfully added" .format(rm_type, rm_name))
 				self.allocate_available_officespace(new_fellow)
 				self.allocate_available_livingspace(new_fellow)
-				
 			
 	def allocate_available_officespace(self,person):
 		"""This method gets all available offices, confirms if the
