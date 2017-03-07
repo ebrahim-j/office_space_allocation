@@ -2,7 +2,7 @@
 This is the interactive Office Space Allocation command line interface
 Usage:
 	Dojo create_room <room_type> <room_names>
-	Dojo add_person <person_name> <FELLOW|STAFF> [wants_accomodation]
+	Dojo add_person <person_name> <role> [<wants_accomodation>]
 	Dojo (-i | --interactive)
 	Dojo (-h | --help | --version)
 Options:
@@ -70,6 +70,7 @@ class Dojo_Interface(cmd.Cmd):
 		"""Usage: create_room <room_type> <room_names> """
 		roomtype = arg["<room_type>"]
 		roomnames = ''.join(arg["<room_names>"]).split(',')
+		
 
 		for roomname in roomnames:
 			print(self.dojo_space.create_room(roomtype, roomname))
@@ -77,13 +78,14 @@ class Dojo_Interface(cmd.Cmd):
 
 	@docopt_cmd
 	def do_add_person(self, arg):
-	 	"""Usage: add_person <person_name> <FELLOW|STAFF> [wants_accomodation]"""
+	 	"""Usage: add_person <person_name> <role> [<wants_accomodation>]"""
 	 	name = arg["<person_name>"]
-	 	role = arg["<FELLOW|STAFF>"]
+	 	role = arg["<role>"]
 	 	accomodation_option = arg["<wants_accomodation>"]
 
 	 	if role == "STAFF" and accomodation_option.upper() == "Y":
 	 		print ("Staff cannot be allocated acoomodation space")
+
 	 	print(self.dojo_space.add_person(name,role, accomodation_option))
 	 	
 

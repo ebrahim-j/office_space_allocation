@@ -30,7 +30,7 @@ class Dojo(object):
 			new_office = OfficeSpace(room_name)
 			self.all_offices.append(new_office)
 			return ("An {} called {} has been successfully created" .format(room_type, room_name))
-		elif room_type.upper() == "LIVING SPACE":
+		elif room_type.upper() == "LIVINGSPACE":
 			if room_name in [livingspace.name for livingspace in self.all_livingspace]:
 				return ("This living space already exists!")
 			new_livingspace = LivingSpace(room_name)
@@ -47,17 +47,17 @@ class Dojo(object):
 		if role.upper() == "STAFF":
 			new_staff = Staff(name)
 			self.all_staff.append(new_staff)
-			return (" {} {} has been successfully added" .format(role, name))
-			self.allocate_available_officespace(new_staff)
+			print ("{} {} has been successfully added" .format(role, name))
+			return self.allocate_available_officespace(new_staff)
 		elif role.upper() == "FELLOW":
 			new_fellow = Fellow(name, wants_accomodation)
 			self.all_fellows.append(new_fellow)
-			return ("{} {} has been successfully added" .format(role, name))
-			self.allocate_available_officespace(new_fellow)
+			print ("{} {} has been successfully added" .format(role, name))
+			print (self.allocate_available_officespace(new_fellow))
 
 			#checks whether fellow wants accomodation
 			if new_fellow.wants_accomodation.upper() == "Y":
-				self.allocate_available_livingspace(new_fellow)
+				return self.allocate_available_livingspace(new_fellow)
 		else:
 			return ("Invalid role. Specify either FELLOW or STAFF!")
 			
