@@ -34,3 +34,13 @@ class TestDojoFunctionalities(unittest.TestCase):
 		new_count_staff= len(self.the_dojo.all_staff)
 		self.assertEqual(new_count_staff - initial_count_staff, 1, 
 			msg = 'Failed to add new Staff')
+
+	def test_create_room_returns_error_message_if_roomtype_not_string(self):
+		with self.assertRaises(ValueError):
+			self.the_dojo.create_room(123,"blue")
+
+	def test_create_room_returns_error_message_if_roomname_not_string(self):
+		with self.assertRaises(ValueError):
+			self.the_dojo.create_room("OFFICE",123)
+	
+

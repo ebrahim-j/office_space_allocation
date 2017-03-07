@@ -20,19 +20,6 @@ class TestPerson(unittest.TestCase):
 			'Y' or 'N',
 			msg = 'Invalid option')
 
-	def test_fellow_name_returns_error_message_if_arg_not_string(self):
-		new_fellow = Fellow(123,"Y")
-		with self.assertRaises(ValueError):
-			new_fellow.name
-
-	def test_staff_name_returns_error_message_if_arg_not_string(self):
-		new_staff = Staff(123)
-		with self.assertRaises(ValueError):
-			new_staff.name
-
-	def test_fellow_accomodation_returns_error_message_if_arg_not_string(self):
-		new_fellow = Fellow("maz", 1)
-		with self.assertRaises(ValueError):
-			new_fellow.role
+	
 
 

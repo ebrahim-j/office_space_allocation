@@ -16,11 +16,6 @@ class TestCreateRoom(unittest.TestCase):
 		self.assertEqual(self.office_space.room_type, "OFFICE",
 			msg = "Room created should be of type OFFICE")
 
-	def test_officespace_returns_error_message_if_arg_not_string(self):
-		new_office = OfficeSpace(111)
-		with self.assertRaises(ValueError):
-			new_office.name
-
 	def test_livingspace_size(self):
 		self.assertEqual(self.living_space.capacity, 4, 
 			msg = 'Maximum capacity is 4 occupants')
@@ -29,7 +24,3 @@ class TestCreateRoom(unittest.TestCase):
 		self.assertEqual(self.living_space.room_type, "LIVING SPACE",
 			msg = "Room Created should be of type LIVING SPACE")
 	
-	def test_livingspace_returns_error_message_if_arg_not_string(self):
-		new_livingspace = LivingSpace(111)
-		with self.assertRaises(ValueError):
-			new_livingspace.name
