@@ -24,3 +24,10 @@ class TestCreateRoom(unittest.TestCase):
 		self.assertEqual(self.living_space.room_type, "LIVING SPACE",
 			msg = "Room Created should be of type LIVING SPACE")
 	
+	def test_allowed_maximum_number_of_occupants_per_office(self):
+		self.assertEqual(len(self.office_space.occupants), 6,
+			msg = 'You cannot assign more than 6 people to an office')
+
+	def test_allowed_maximum_number_of_occupants_per_livingspace(self):
+		self.assertEqual(len(self.living_space.occupants), 4,
+			msg = 'You cannot assign more than 6 people to a living space')
