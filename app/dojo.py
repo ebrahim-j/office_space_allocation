@@ -22,8 +22,6 @@ class Dojo(object):
 		 before succesfully creating the room
 
 		 """
-		if not isinstance (room_type,str) or  not isinstance (room_name, str):
-			raise ValueError("Use string values only")
 		if room_type.upper() == "OFFICE":
 			if room_name in [office.name for office in self.all_offices]:	
 				return ("This office already exists!")	
