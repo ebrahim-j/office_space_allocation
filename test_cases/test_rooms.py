@@ -30,4 +30,4 @@ class TestCreateRoom(unittest.TestCase):
 
 	def test_allowed_maximum_number_of_occupants_per_livingspace(self):
 		self.assertEqual(len(self.living_space.occupants), 4,
-			msg = 'You cannot assign more than 6 people to a living space')
+			msg = 'You cannot assign more than 4 people to a living space')
