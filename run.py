@@ -1,10 +1,10 @@
 """
 This is the interactive Office Space Allocation command line interface
 Usage:
-	dojo create_room <room_type> <room_name>
-	dojo add_person <person_name> <FELLOW|STAFF> [wants_accomodation]
-	dojo (-i | --interactive)
-	dojo (-h | --help | --version)
+	Dojo create_room <room_type> <room_names>
+	Dojo add_person <person_name> <FELLOW|STAFF> [wants_accomodation]
+	Dojo (-i | --interactive)
+	Dojo (-h | --help | --version)
 Options:
 	-i, --interactive Interactive Mode
 	-h, --help Shows the available commands for dojo
@@ -50,7 +50,7 @@ def docopt_cmd(func):
 
 
 def launch():
-	cprint(figlet_format('Dojo Space Allocator', font='poison'), 'green', 
+	cprint(figlet_format('Dojo Space', font='roman'), 'magenta', 
 		attrs=['blink'])
 	print("Welcome to the Dojo Space Allocator." + 
 		"Here is a list of commands for your use " + 
@@ -60,25 +60,33 @@ def launch():
 
 class Dojo_Interface(cmd.Cmd):
 	launch()
-	prompt = 'DSA->>'
+	prompt = 'Dojo->>'
 
-	 dojo_space = Dojo()
+	dojo_space = Dojo()
 
 
 	@docopt_cmd
 	def do_create_room(self, arg):
-		"""Usage: create_room <room_type> <room_name> """
+		"""Usage: create_room <room_type> <room_names> """
 		roomtype = arg["<room_type>"]
-		roomname = arg["<room_name>"]
-		pass
+		roomnames = ''.join(arg["<room_names>"]).split(',')
+
+		for roomname in roomnames:
+			print(self.dojo_space.create_room(roomtype, roomname))
+		
 
 	@docopt_cmd
 	def do_add_person(self, arg):
 	 	"""Usage: add_person <person_name> <FELLOW|STAFF> [wants_accomodation]"""
 	 	name = arg["<person_name>"]
 	 	role = arg["<FELLOW|STAFF>"]
-	 	choose_acc = arg["<wants_accomodation>"]
-	 	pass
+	 	accomodation_option = arg["<wants_accomodation>"]
+
+	 	if role == "STAFF" and accomodation_option.upper() == "Y":
+	 		print ("Staff cannot be allocated acoomodation space")
+	 	print(self.dojo_space.add_person(name,role, accomodation_option))
+	 	
+
 
 	def do_quit():
 		"""Quits interactive mode"""
