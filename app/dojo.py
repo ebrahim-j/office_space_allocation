@@ -72,7 +72,7 @@ class Dojo(object):
 			if len(office_space.occupants) < office_space.capacity:
 				available_office.append(office_space)
 		#loop to check office space to be allocated exists
-		if len(available_office) >= 1:
+		if available_office:
 			random_office_space = random.choice(available_office)
 			random_office_space.occupants.append(new_person)
 			return ("{} has been allocated the office {} " .format(new_person.name, random_office_space.name))
@@ -90,7 +90,7 @@ class Dojo(object):
 			if len(living_space.occupants) < living_space.capacity:
 				available_livingspace.append(living_space)
 		#loop checks vacant livingspace to be allocated
-		if len(available_livingspace) >= 1:
+		if available_livingspace:
 			random_living_space= random.choice(available_livingspace)
 			random_living_space.occupants.append(new_person)
 			return ("{} has been allocated the livingspace {}" .format(new_person.name, random_living_space.name))
