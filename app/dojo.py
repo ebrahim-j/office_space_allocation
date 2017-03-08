@@ -18,6 +18,8 @@ class Dojo(object):
 		self.all_livingspace = []
 		self.all_fellows = []
 		self.all_staff = []
+		self.officespace_waitinglist = []
+		self.livingspace_waitinglist = []
 
 	def create_room(self, room_type, room_name):
 		"""Create a new room, either office or living space at the Dojo. 
@@ -51,8 +53,8 @@ class Dojo(object):
 			new_staff = Staff(name)
 			self.all_staff.append(new_staff)
 			print (text_format.CBOLD + "\nSTAFF {} has been successfully added\n" .format(name)
-				+text_format.CEND)
-			return self.allocate_available_officespace(new_staff)
+				+text_format.CEND)			
+			return (self.allocate_available_officespace(new_staff))
 		elif role.upper() == "FELLOW":
 			new_fellow = Fellow(name, wants_accomodation)
 			self.all_fellows.append(new_fellow)
@@ -61,10 +63,12 @@ class Dojo(object):
 			print (self.allocate_available_officespace(new_fellow))
 
 			#checks whether fellow wants accomodation
-			if new_fellow.wants_accomodation.upper() == "Y":
-				print (self.allocate_available_livingspace(new_fellow))
+			if new_fellow.wants_accomodation== "y":
+				return (self.allocate_available_livingspace(new_fellow))
+						
 		else:
 			return (text_format.CRED + "\nInvalid role! Specify either FELLOW or STAFF!\n"+text_format.CEND)
+		
 			
 	def allocate_available_officespace(self,new_person):
 		"""This method gets all available offices, confirms if the
@@ -80,11 +84,14 @@ class Dojo(object):
 		if available_office:
 			allocated_office_space = random.choice(available_office)
 			allocated_office_space.occupants.append(new_person)
-			return (text_format.CBOLD + "\n{} has been allocated the office {} \n" \
-				.format(new_person.name, allocated_office_space.name)
+			return (text_format.CBOLD + "\n{} has been allocated the office {} \n" .format(new_person.name, allocated_office_space.name)
 				+text_format.CEND)
 		else:
-			return (text_format.CRED + "\nWARNING!No available OFFICE space\n"+text_format.CEND)
+			print (text_format.CRED + "\nWARNING!No available OFFICE space"+text_format.CEND)
+			self.officespace_waitinglist.append(new_person)
+			return (text_format.CGREEN +"{} has been added to the officespace waiting list\n" .format(new_person.name)
+				+ text_format.CEND)
+		
 
 	def allocate_available_livingspace(self, new_person):
 		"""This method gets all available living space, confirms if the
@@ -100,8 +107,11 @@ class Dojo(object):
 		if available_livingspace:
 			allocated_living_space= random.choice(available_livingspace)
 			allocated_living_space.occupants.append(new_person)
-			return (text_format.CBOLD + "\n{} has been allocated the livingspace {} \n" \
-				.format(new_person.name, allocated_living_space.name)
+			return (text_format.CRED + "\n{} has been allocated the livingspace {} \n" .format(new_person.name, allocated_living_space.name)
 				+text_format.CEND)
 		else:
-			return (text_format.CRED + "\nWARNING!No available LIVING space\n"+text_format.CEND)
+			print (text_format.CRED + "\nWARNING!No available LIVING space"+text_format.CEND)
+			self.livingspace_waitinglist.append(new_person)
+			return (text_format.CRED + "{} has been added to the livingspace waiting list\n" .format(new_person.name)
+				+ text_format.CEND)
+		
