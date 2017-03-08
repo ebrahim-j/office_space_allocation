@@ -6,14 +6,13 @@ class Person(object):
 		self.wants_accomodation = wants_accomodation
 
 
-
 class Staff(Person):
 
 	def __init__(self, name):
 		self.role = "STAFF"
 		self.name = name
+		self.email = ''
 		
-
 
 class Fellow(Person):
 
@@ -21,4 +20,4 @@ class Fellow(Person):
 		self.name = name
 		self.wants_accomodation = wants_accomodation
 		self.role = "FELLOW"
-		
+		self.email = ''

@@ -29,34 +29,48 @@ class Dojo(object):
 		 """
 		if room_type.upper() == "OFFICE":
 			if room_name in [office.name for office in self.all_offices]:	
-				return (text_format.CRED + "\nWARNING! This office already exists!\n" +text_format.CEND)	
+				return (text_format.CRED + "\nWARNING! This office already exists!\n"
+				 +text_format.CEND)	
 			new_office = OfficeSpace(room_name)
 			self.all_offices.append(new_office)
-			return (text_format.CBOLD + "\nAn OFFICE called {} has been successfully created\n".format(room_name)
+			return (text_format.CBOLD + "\nAn OFFICE called {} has been successfully created\n"
+				.format(room_name)
 				+ text_format.CEND)
 		elif room_type.upper() == "LIVINGSPACE":
 			if room_name in [livingspace.name for livingspace in self.all_livingspace]:
-				return (text_format.CRED + "\nWARNING! This livingspace already exists!\n" +text_format.CEND)
+				return (text_format.CRED + "\nWARNING! This livingspace already exists!\n" 
+					+text_format.CEND)
 			new_livingspace = LivingSpace(room_name)
 			self.all_livingspace.append(new_livingspace)
-			return (text_format.CBOLD + "\nA LIVING SPACE called {} has been successfully created\n".format(room_name)
+			return (text_format.CBOLD + "\nA LIVING SPACE called {} has been successfully created\n"
+				.format(room_name)
 				+ text_format.CEND)	
 		else:
-			return(text_format.CRED + "\nInvalid room type! Create either 'OFFICE' or 'LIVING SPACE'\n"+text_format.CEND )
+			return(text_format.CRED + "\nInvalid room type! Create either 'OFFICE' or 'LIVING SPACE'\n"
+				+text_format.CEND )
 				
-	def add_person(self, name, role, wants_accomodation="N"):
+	def add_person(self, name, email_address, role, wants_accomodation="N"):
 		"""Add a new person to the Dojo and allocate 
 		either office space or living space 
 
 		"""
 		if role.upper() == "STAFF":
+			if email_address in [this_staff.email for this_staff in self.all_staff]:
+				return (text_format.CRED + "\nWARNING! Staff with this email_address already exists!\n"
+					+text_format.CEND)
 			new_staff = Staff(name)
+			new_staff.email = email_address
 			self.all_staff.append(new_staff)
-			print (text_format.CBOLD + "\nSTAFF {} has been successfully added\n" .format(name)
+			print (text_format.CBOLD + "\nSTAFF {} has been successfully added\n" 
+				.format(name)
 				+text_format.CEND)			
 			return (self.allocate_available_officespace(new_staff))
 		elif role.upper() == "FELLOW":
+			if email_address in [this_fellow.email for this_fellow in self.all_fellows]:
+				return (text_format.CRED + "\nWARNING! Fellow with this email_address already exists!\n" 
+					+text_format.CEND)
 			new_fellow = Fellow(name, wants_accomodation)
+			new_fellow.email = email_address
 			self.all_fellows.append(new_fellow)
 			print (text_format.CBOLD + "\nFELLOW {} has been successfully added\n" .format(name)
 				+text_format.CEND)
@@ -67,7 +81,8 @@ class Dojo(object):
 				return (self.allocate_available_livingspace(new_fellow))
 						
 		else:
-			return (text_format.CRED + "\nInvalid role! Specify either FELLOW or STAFF!\n"+text_format.CEND)
+			return (text_format.CRED+"\nInvalid role! Specify either FELLOW or STAFF!\n"
+				+text_format.CEND)
 		
 			
 	def allocate_available_officespace(self,new_person):
@@ -84,12 +99,14 @@ class Dojo(object):
 		if available_office:
 			allocated_office_space = random.choice(available_office)
 			allocated_office_space.occupants.append(new_person)
-			return (text_format.CBOLD + "\n{} has been allocated the office {} \n" .format(new_person.name, allocated_office_space.name)
+			return (text_format.CBOLD + "\n{} has been allocated the office {} \n" 
+				.format(new_person.name, allocated_office_space.name)
 				+text_format.CEND)
 		else:
 			print (text_format.CRED + "\nWARNING!No available OFFICE space"+text_format.CEND)
 			self.officespace_waitinglist.append(new_person)
-			return (text_format.CGREEN +"{} has been added to the officespace waiting list\n" .format(new_person.name)
+			return (text_format.CGREEN +"{} has been added to the officespace waiting list\n" 
+				.format(new_person.name)
 				+ text_format.CEND)
 		
 
@@ -107,11 +124,15 @@ class Dojo(object):
 		if available_livingspace:
 			allocated_living_space= random.choice(available_livingspace)
 			allocated_living_space.occupants.append(new_person)
-			return (text_format.CRED + "\n{} has been allocated the livingspace {} \n" .format(new_person.name, allocated_living_space.name)
+			return (text_format.CRED + "\n{} has been allocated the livingspace {} \n" 
+				.format(new_person.name, allocated_living_space.name)
 				+text_format.CEND)
 		else:
 			print (text_format.CRED + "\nWARNING!No available LIVING space"+text_format.CEND)
 			self.livingspace_waitinglist.append(new_person)
-			return (text_format.CRED + "{} has been added to the livingspace waiting list\n" .format(new_person.name)
+			return (text_format.CRED + "{} has been added to the livingspace waiting list\n" 
+				.format(new_person.name)
 				+ text_format.CEND)
+		
+
 		

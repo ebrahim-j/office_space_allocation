@@ -2,7 +2,7 @@
 This is the interactive Office Space Allocation command line interface
 Usage:
 	Dojo create_room <room_type> <room_names>
-	Dojo add_person <person_name> <role> [<wants_accomodation>]
+	Dojo add_person <person_name> <email_address> <role> [<wants_accomodation>]
 	Dojo (-i | --interactive)
 	Dojo (-h | --help | --version)
 Options:
@@ -11,10 +11,14 @@ Options:
 """
 
 import cmd
-from docopt import docopt, DocoptExit
-from app.dojo import Dojo	
+
+from app.dojo import Dojo
+from text_styles import text_format
+
+from docopt import docopt, DocoptExit	
 from pyfiglet import figlet_format
 from termcolor import cprint
+
 
 
 
@@ -78,15 +82,18 @@ class Dojo_Interface(cmd.Cmd):
 
 	@docopt_cmd
 	def do_add_person(self, arg):
-	 	"""Usage: add_person <person_name> <role> [<wants_accomodation>]"""
+	 	"""Usage: add_person <person_name> <email_address> <role> [<wants_accomodation>]"""
 	 	name = arg["<person_name>"]
+	 	email_address = arg["<email_address>"]
 	 	role = arg["<role>"]
 	 	accomodation_option = arg["<wants_accomodation>"]
 
-	 	if role == "STAFF" and accomodation_option.upper() == "Y":
-	 		print ("Staff cannot be allocated acoomodation space")
+	 	if role== "Staff" and accomodation_option == "y":
+	 		print (text_format.CRED + "\nWARNING! Staff cannot be allocated accomodation space\n" +text_format.CEND)
+	 		return	
 
-	 	print(self.dojo_space.add_person(name,role, accomodation_option))
+	 	print (self.dojo_space.add_person(name, email_address, role, accomodation_option))
+
 	 	
 
 
