@@ -3,11 +3,7 @@ This is the interactive Office Space Allocation command line interface
 Usage:
 	Dojo create_room <room_type> <room_names>
 	Dojo add_person <person_name> <email_address> <role> [<wants_accomodation>]
-	Dojo (-i | --interactive)
-	Dojo (-h | --help | --version)
-Options:
-	-i, --interactive Interactive Mode
-	-h, --help Shows the available commands for dojo
+	
 """
 
 import cmd
