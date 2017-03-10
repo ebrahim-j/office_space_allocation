@@ -133,6 +133,35 @@ class Dojo(object):
 			return (text_format.CRED + "{} has been added to the livingspace waiting list\n" 
 				.format(new_person.name)
 				+ text_format.CEND)
-		
+
+	def print_room(self, room_name):
+		"""This method prints names of all occupants in the
+		specified room name
+
+		"""
+		output = ''
+
+		for room in itertools.chain(self.all_offices, self.all_livingspace):
+			if room.name == room_name:
+				output = ("\n LIST OF ALL OCCUPANTS IN OFFICE Purple\n" + "*" * 40)
+				if room.occupants:
+					for occupant in room.occupants:
+						output += ("\n" + occupant.name + "\t" + occupant.role + "\n")
+				else:
+					output+= ("The {} {} has no occupants ".format(room.room_type,room_name))
+			else:
+				return ("The room {} does not exist!" . format(room_name))
+
+
+	def print_allocations(self,filename=None):
+
+
+
+		pass
+
+	def print_unallocated(self,filename=None):
+
+
+		pass	
 
 		
