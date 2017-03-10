@@ -144,14 +144,15 @@ class Dojo(object):
 
 		for room in itertools.chain(self.all_offices, self.all_livingspace):
 			if room.name == room_name:
-				output = ("\n LIST OF ALL OCCUPANTS IN OFFICE Purple\n" + "*" * 40)
+				output = ("\n LIST OF ALL OCCUPANTS IN " + room.room_type +  " " + room_name + "\n" + "*" * 50)
 				if room.occupants:
 					for occupant in room.occupants:
 						output += ("\n" + occupant.name + "\t" + occupant.role + "\n")
 				else:
-					output+= ("The {} {} has no occupants ".forma                                                                                                                                                                                                                                                                                                                                                                                                                                                               t(room.room_type,room_name))
+					output+= ("\n\n\tThe {} {} has no occupants\n\n".format(room.room_type,room_name))
 			else:
-				return ("The room {} does not exist!" .format(room_name))
+				output = ("\n\tThe room {} does not exist!\n" .format(room_name))
+			return (text_format.CBOLD + output + text_format.CEND)
 
 
 	def print_allocations(self,filename=None):

@@ -3,6 +3,7 @@ This is the interactive Office Space Allocation command line interface
 Usage:
 	Dojo create_room <room_type> <room_names>
 	Dojo add_person <person_name> <email_address> <role> [<wants_accomodation>]
+	Dojo print_room <room_name>
 	
 """
 
@@ -90,7 +91,14 @@ class Dojo_Interface(cmd.Cmd):
 
 	 	print (self.dojo_space.add_person(name, email_address, role, accomodation_option))
 
-	 	
+	
+	@docopt_cmd
+	def do_print_room(self, arg):
+		"""Usage: print_room <room_name>"""
+		roomname = arg["<room_name>"]
+
+		print (self.dojo_space.print_room(roomname))
+
 
 
 	def do_quit():
