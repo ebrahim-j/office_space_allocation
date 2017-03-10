@@ -93,7 +93,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.assertTrue(os.path.isfile("file1.txt"))
 		os.remove("file1.txt")
 
-	def test_print_unallocated_with_filenamed_unspecified(self):
+	def test_print_unallocated_with_filename_unspecified(self):
 		self.the_dojo.add_person("Marie", "marie@marie.com","Fellow", "y")
 		self.the_dojo.add_person("Pete","pete@pete","Staff")
 		output = self.the_dojo.print_unallocated()
