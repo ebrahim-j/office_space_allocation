@@ -1,4 +1,5 @@
 import random
+import itertools
 
 from .person import Person, Fellow, Staff
 from .room import OfficeSpace, LivingSpace
@@ -148,14 +149,12 @@ class Dojo(object):
 					for occupant in room.occupants:
 						output += ("\n" + occupant.name + "\t" + occupant.role + "\n")
 				else:
-					output+= ("The {} {} has no occupants ".format(room.room_type,room_name))
+					output+= ("The {} {} has no occupants ".forma                                                                                                                                                                                                                                                                                                                                                                                                                                                               t(room.room_type,room_name))
 			else:
-				return ("The room {} does not exist!" . format(room_name))
+				return ("The room {} does not exist!" .format(room_name))
 
 
 	def print_allocations(self,filename=None):
-
-
 
 		pass
 
