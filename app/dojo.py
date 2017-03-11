@@ -142,7 +142,7 @@ class Dojo(object):
 		"""
 		output = ''
 
-		for room in itertools.chain(self.all_offices, self.all_livingspace):
+		for room in itertools.chain(self.all_offices, self.all_livingspace) :
 			if room.name == room_name:
 				output = ("\n LIST OF ALL OCCUPANTS IN " + room.room_type +  " " + room_name + "\n" + "*" * 50)
 				if room.occupants:
@@ -156,8 +156,29 @@ class Dojo(object):
 
 
 	def print_allocations(self,filename=None):
+		"""This method prints a list of all allocations at the Dojo. The registered
+		allocations can then be written to the specified text file
 
-		pass
+		"""
+		output = ''
+
+		for room in itertools.chain(self.all_offices, self.all_livingspace):
+			if room.occupants:
+				output = ("\n\nROOM NAME: {} \tTYPE: {} " .format(room.name, room.room_type))
+				output += ("\n" + "-" * 40 + "\n")
+				for occupant in room.occupants:
+					output += (occupant.name + "-" + occupant.role + ",")
+
+
+		if filename:
+			print("Saving output data to file...")
+			txt_file = open(filename + ".txt", "w+")
+			txt_file.write(output)
+			txt_file.close()
+			return ("\nData has been successfully saved to {}.txt\n" .format(filename))
+		else:
+			return output
+				
 
 	def print_unallocated(self,filename=None):
 
