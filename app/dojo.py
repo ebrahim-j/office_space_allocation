@@ -140,7 +140,7 @@ class Dojo(object):
 		specified room name
 
 		"""
-		output = ''
+		output = ""
 
 		for room in itertools.chain(self.all_offices, self.all_livingspace) :
 			if room.name == room_name:
@@ -160,14 +160,14 @@ class Dojo(object):
 		allocations can then be written to the specified text file
 
 		"""
-		output = ''
+		output = ""
 
 		for room in itertools.chain(self.all_offices, self.all_livingspace):
 			if room.occupants:
 				output = ("\n\nROOM NAME: {} \tTYPE: {} " .format(room.name, room.room_type))
 				output += ("\n" + "-" * 40 + "\n")
 				for occupant in room.occupants:
-					output += (occupant.name + "-" + occupant.role + ",")
+					output += (occupant.name + "-" + occupant.role + ", ")
 
 
 		if filename:
@@ -181,8 +181,26 @@ class Dojo(object):
 				
 
 	def print_unallocated(self,filename=None):
+		"""This method prints a list of all staff and fellows,
+		that have not been allocated any office or living space.
 
+		"""
 
-		pass	
+		output = ""
+
+		if self.officespace_waitinglist or self.livingspace_waitinglist:
+			output = "\n\n LIST OF ALL UNALLOCATED STAFF AND FELLOWS\n" + "*" * 50 + "\n"
+			for person in itertools.chain(self.officespace_waitinglist, self.livingspace_waitinglist):
+				output += (person.name + " " + person.email + " " + person.role + " " + person.wants_accomodation)
+
+		if filename:
+			print ("Saving unallocations list to file...")
+			txt_file = open(filename + ".txt", "w+")
+			txt_file.write(output)
+			txt_file.close()
+			return ("\nData has been successfully saved to {}.txt\n" .format(filename))
+		else:
+			return output
+
 
 		

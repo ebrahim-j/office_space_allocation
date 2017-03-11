@@ -5,6 +5,7 @@ Usage:
 	Dojo add_person <person_name> <email_address> <role> [<wants_accomodation>]
 	Dojo print_room <room_name>
 	Dojo print_allocations [<filename>]
+	Dojo print_unallocated [<filename>]
 """
 
 import cmd
@@ -106,6 +107,14 @@ class Dojo_Interface(cmd.Cmd):
 		file_name = arg["<filename>"]
 
 		print(self.dojo_space.print_allocations(file_name))
+
+
+	@docopt_cmd
+	def do_print_unallocated(self, arg):
+		"""Usage: print_unallocated [<filename>]"""
+		file_name = arg["<filename>"]
+
+		print(self.dojo_space.print_unallocated(file_name))
 
 
 	def do_quit():
