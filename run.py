@@ -4,7 +4,7 @@ Usage:
 	Dojo create_room <room_type> <room_names>
 	Dojo add_person <person_name> <email_address> <role> [<wants_accomodation>]
 	Dojo print_room <room_name>
-	
+	Dojo print_allocations [<filename>]
 """
 
 import cmd
@@ -99,6 +99,13 @@ class Dojo_Interface(cmd.Cmd):
 
 		print (self.dojo_space.print_room(roomname))
 
+
+	@docopt_cmd
+	def do_print_allocations(self, arg):
+		"""Usage: print_allocations [<filename>]"""
+		file_name = arg["<filename>"]
+
+		print(self.dojo_space.print_allocations(file_name))
 
 
 	def do_quit():
