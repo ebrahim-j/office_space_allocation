@@ -125,13 +125,13 @@ class Dojo(object):
 		if available_livingspace:
 			allocated_living_space= random.choice(available_livingspace)
 			allocated_living_space.occupants.append(new_person)
-			return (text_format.CRED + "\n{} has been allocated the livingspace {} \n" 
+			return (text_format.CBOLD + "\n{} has been allocated the livingspace {} \n" 
 				.format(new_person.name, allocated_living_space.name)
 				+text_format.CEND)
 		else:
 			print (text_format.CRED + "\nWARNING!No available LIVING space"+text_format.CEND)
 			self.livingspace_waitinglist.append(new_person)
-			return (text_format.CRED + "{} has been added to the livingspace waiting list\n" 
+			return (text_format.CGREEN + "{} has been added to the livingspace waiting list\n" 
 				.format(new_person.name)
 				+ text_format.CEND)
 
@@ -142,7 +142,10 @@ class Dojo(object):
 		"""
 		output = ""
 
-		for room in itertools.chain(self.all_offices, self.all_livingspace) :
+		if not room_name in [room.name for room in itertools.chain(self.all_offices, self.all_livingspace)]:
+			output = ("\n\tThe room {} does not exist!\n" .format(room_name))
+
+		for room in itertools.chain(self.all_offices, self.all_livingspace):
 			if room.name == room_name:
 				output = ("\n LIST OF ALL OCCUPANTS IN " + room.room_type +  " " + room_name + "\n" + "*" * 50)
 				if room.occupants:
@@ -150,9 +153,9 @@ class Dojo(object):
 						output += ("\n" + occupant.name + "\t" + occupant.role + "\n")
 				else:
 					output+= ("\n\n\tThe {} {} has no occupants\n\n".format(room.room_type,room_name))
-			else:
-				output = ("\n\tThe room {} does not exist!\n" .format(room_name))
-			return (text_format.CBOLD + output + text_format.CEND)
+		
+
+		return (text_format.CBOLD + output + text_format.CEND)
 
 
 	def print_allocations(self,filename=None):
@@ -177,7 +180,7 @@ class Dojo(object):
 			txt_file.close()
 			return ("\nData has been successfully saved to {}.txt\n" .format(filename))
 		else:
-			return output
+			return (text_format.CBOLD + output + text_format.CEND)
 				
 
 	def print_unallocated(self,filename=None):
@@ -185,7 +188,6 @@ class Dojo(object):
 		that have not been allocated any office or living space.
 
 		"""
-
 		output = ""
 
 		if self.officespace_waitinglist or self.livingspace_waitinglist:
@@ -200,7 +202,7 @@ class Dojo(object):
 			txt_file.close()
 			return ("\nData has been successfully saved to {}.txt\n" .format(filename))
 		else:
-			return output
+			return (text_format.CBOLD + output + text_format.CEND)
 
 
 		
