@@ -1,9 +1,10 @@
 import random
 import itertools
+import os
 
 from .person import Person, Fellow, Staff
 from .room import OfficeSpace, LivingSpace
-from text_styles import text_format
+from ..text_styles import text_format
 
 
 """This file defines all functionalities for our office 
@@ -28,6 +29,8 @@ class Dojo(object):
 		 before succesfully creating the room
 
 		 """
+		if not isinstance (room_type,str) or not isinstance (room_name,str):
+			raise ValueError("Can only be a string variable!")
 		if room_type.upper() == "OFFICE":
 			if room_name in [office.name for office in self.all_offices]:	
 				return (text_format.CRED + "\nWARNING! This office already exists!\n"
@@ -37,6 +40,7 @@ class Dojo(object):
 			return (text_format.CBOLD + "\nAn OFFICE called {} has been successfully created\n"
 				.format(room_name)
 				+ text_format.CEND)
+
 		elif room_type.upper() == "LIVINGSPACE":
 			if room_name in [livingspace.name for livingspace in self.all_livingspace]:
 				return (text_format.CRED + "\nWARNING! This livingspace already exists!\n" 
@@ -214,7 +218,3 @@ class Dojo(object):
 			txt_file.write(output)
 			txt_file.close()
 			return ("\nData has been successfully saved to {}.txt\n" .format(filename))
-			
-
-
-		
