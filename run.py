@@ -4,8 +4,8 @@ Usage:
 	Dojo create_room <room_type> <room_names>
 	Dojo add_person <person_name> <email_address> <role> [<wants_accomodation>]
 	Dojo print_room <room_name>
-	Dojo print_allocations [<filename>]
-	Dojo print_unallocated [<filename>]
+	Dojo print_allocations [--o=filename]
+	Dojo print_unallocated [--o=filename]
 """
 
 import cmd
@@ -103,18 +103,18 @@ class Dojo_Interface(cmd.Cmd):
 
 	@docopt_cmd
 	def do_print_allocations(self, arg):
-		"""Usage: print_allocations [<filename>]"""
-		file_name = arg["<filename>"]
+		"""Usage: print_allocations [--o=filename]"""
+		filename = arg["--o"]
 
-		print(self.dojo_space.print_allocations(file_name))
+		print(self.dojo_space.print_allocations(filename))
 
 
 	@docopt_cmd
 	def do_print_unallocated(self, arg):
-		"""Usage: print_unallocated [<filename>]"""
-		file_name = arg["<filename>"]
+		"""Usage: print_unallocated [--o=filename]"""
+		filename = arg["--o"]
 
-		print(self.dojo_space.print_unallocated(file_name))
+		print(self.dojo_space.print_unallocated(filename))
 
 
 	def do_quit():

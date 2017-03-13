@@ -172,7 +172,7 @@ class Dojo(object):
 
 		for room in itertools.chain(self.all_offices, self.all_livingspace):
 			if room.occupants:
-				output = ("\n\nROOM NAME: {} \tTYPE: {} " .format(room.name, room.room_type))
+				output += ("\n\nROOM NAME: {} \tTYPE: {} " .format(room.name, room.room_type))
 				output += ("\n" + "-" * 40 + "\n")
 				for occupant in room.occupants:
 					output += (occupant.name + "-" + occupant.role + ", ")
