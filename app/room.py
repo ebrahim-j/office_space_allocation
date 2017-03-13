@@ -12,7 +12,7 @@ class OfficeSpace(Room):
 	def __init__(self, name):
 		self.name = name
 		self.room_type = "OFFICE"
-		self. capacity = 6
+		self.capacity = 6
 		self.occupants = []
 		
 

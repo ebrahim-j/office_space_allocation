@@ -21,6 +21,7 @@ class Dojo(object):
 		self.all_staff = []
 		self.officespace_waitinglist = []
 		self.livingspace_waitinglist = []
+		self.status = False
 
 	def create_room(self, room_type, room_name):
 		"""Create a new room, either office or living space at the Dojo. 
@@ -34,22 +35,45 @@ class Dojo(object):
 				 +text_format.CEND)	
 			new_office = OfficeSpace(room_name)
 			self.all_offices.append(new_office)
-			return (text_format.CBOLD + "\nAn OFFICE called {} has been successfully created\n"
+			print (text_format.CBOLD + "\nAn OFFICE called {} has been successfully created\n"
 				.format(room_name)
-				+ text_format.CEND)
+				+ text_format.CEND)	
+			return (self.allocate_unallocated_person(room_type))	
+				
+
+			
 		elif room_type.upper() == "LIVINGSPACE":
 			if room_name in [livingspace.name for livingspace in self.all_livingspace]:
 				return (text_format.CRED + "\nWARNING! This livingspace already exists!\n" 
 					+text_format.CEND)
 			new_livingspace = LivingSpace(room_name)
 			self.all_livingspace.append(new_livingspace)
-			return (text_format.CBOLD + "\nA LIVING SPACE called {} has been successfully created\n"
+			print (text_format.CBOLD + "\nA LIVING SPACE called {} has been successfully created\n"
 				.format(room_name)
 				+ text_format.CEND)	
+			return (self.allocate_unallocated_person(room_type))
+
 		else:
 			return(text_format.CRED + "\nInvalid room type! Create either 'OFFICE' or 'LIVING SPACE'\n"
 				+text_format.CEND )
-				
+
+	def allocate_unallocated_person(self,room_type):
+		if room_type.upper() == "OFFICE":
+			for each_person in self.officespace_waitinglist:
+				print (self.allocate_available_officespace(each_person))
+				if self.status = True:
+					self.officespace_waitinglist.remove(each_person) 
+					
+
+		elif room_type.upper() == "LIVINGSPACE":
+			for each in self,livingspace_waitinglist:
+				print (self.allocate_available_livingspace(each))
+				if self.status = True:
+					self.livingspace_waitinglist.remove(each)
+		return
+
+
+					
 	def add_person(self, name, email_address, role, wants_accomodation="N"):
 		"""Add a new person to the Dojo and allocate 
 		either office space or living space 
@@ -92,21 +116,24 @@ class Dojo(object):
 
 		"""
 		available_office = []
+		
 
 		for office_space in self.all_offices:
 			if len(office_space.occupants) < office_space.capacity:
 				available_office.append(office_space)
+		
 		#loop to check office space to be allocated exists
 		if available_office:
 			allocated_office_space = random.choice(available_office)
 			allocated_office_space.occupants.append(new_person)
-			return (text_format.CBOLD + "\n{} has been allocated the office {} \n" 
+			self.status = True
+			print (text_format.CBOLD + "\n{} has been allocated the office {} \n" 
 				.format(new_person.name, allocated_office_space.name)
 				+text_format.CEND)
 		else:
 			print (text_format.CRED + "\nWARNING!No available OFFICE space"+text_format.CEND)
 			self.officespace_waitinglist.append(new_person)
-			return (text_format.CGREEN +"{} has been added to the officespace waiting list\n" 
+			print (text_format.CGREEN +"{} has been added to the officespace waiting list\n" 
 				.format(new_person.name)
 				+ text_format.CEND)
 		
