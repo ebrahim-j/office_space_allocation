@@ -117,7 +117,7 @@ class Dojo_Interface(cmd.Cmd):
 		print(self.dojo_space.print_unallocated(filename))
 
 
-	def do_quit():
+	def do_quit(self, arg):
 		"""Quits interactive mode"""
 		print ('...soon I shall become a memory waiting to be erased')
 		print ('... Goodbye!')
