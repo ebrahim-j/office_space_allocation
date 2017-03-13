@@ -3,7 +3,9 @@ This is the interactive Office Space Allocation command line interface
 Usage:
 	Dojo create_room <room_type> <room_names>
 	Dojo add_person <person_name> <email_address> <role> [<wants_accomodation>]
-	
+	Dojo print_room <room_name>
+	Dojo print_allocations [--o=filename]
+	Dojo print_unallocated [--o=filename]
 """
 
 import cmd
@@ -90,7 +92,29 @@ class Dojo_Interface(cmd.Cmd):
 
 	 	print (self.dojo_space.add_person(name, email_address, role, accomodation_option))
 
-	 	
+	
+	@docopt_cmd
+	def do_print_room(self, arg):
+		"""Usage: print_room <room_name>"""
+		roomname = arg["<room_name>"]
+
+		print (self.dojo_space.print_room(roomname))
+
+
+	@docopt_cmd
+	def do_print_allocations(self, arg):
+		"""Usage: print_allocations [--o=filename]"""
+		filename = arg["--o"]
+
+		print(self.dojo_space.print_allocations(filename))
+
+
+	@docopt_cmd
+	def do_print_unallocated(self, arg):
+		"""Usage: print_unallocated [--o=filename]"""
+		filename = arg["--o"]
+
+		print(self.dojo_space.print_unallocated(filename))
 
 
 	def do_quit():

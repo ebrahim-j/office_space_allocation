@@ -129,7 +129,7 @@ class Dojo(object):
 		if available_livingspace:
 			allocated_living_space= random.choice(available_livingspace)
 			allocated_living_space.occupants.append(new_person)
-			return (text_format.CRED + "\n{} has been allocated the livingspace {} \n" 
+			return (text_format.CBOLD + "\n{} has been allocated the livingspace {} \n" 
 				.format(new_person.name, allocated_living_space.name)
 				+text_format.CEND)
 		else:
@@ -138,3 +138,83 @@ class Dojo(object):
 			return (text_format.CGREEN + "{} has been added to the livingspace waiting list\n" 
 				.format(new_person.name)
 				+ text_format.CEND)
+
+	def print_room(self, room_name):
+		"""This method prints names of all occupants in the
+		specified room name
+
+		"""
+		output = ""
+
+		if not room_name in [room.name for room in itertools.chain(self.all_offices, self.all_livingspace)]:
+			output = ("\n\tThe room {} does not exist!\n" .format(room_name))
+
+		for room in itertools.chain(self.all_offices, self.all_livingspace):
+			if room.name == room_name:
+				output = ("\n LIST OF ALL OCCUPANTS IN " + room.room_type +  " " + room_name + "\n" + "*" * 50)
+				if room.occupants:
+					for occupant in room.occupants:
+						output += ("\n" + occupant.name + "\t" + occupant.role + "\n")
+				else:
+					output+= ("\n\n\tThe {} {} has no occupants\n\n".format(room.room_type,room_name))
+		
+
+		return (text_format.CBOLD + output + text_format.CEND)
+
+
+	def print_allocations(self,filename):
+		"""This method prints a list of all allocations at the Dojo. The registered
+		allocations can then be written to the specified text file
+
+		"""
+		output = ""
+
+		if not self.all_offices and not self.all_livingspace:
+			return (text_format.CBOLD + "\n\nThere are currently no rooms to allocate.\n\n"
+				+text_format.CEND)
+
+
+		for room in itertools.chain(self.all_offices, self.all_livingspace):
+			if room.occupants:
+				output += ("\n\nROOM NAME: {} \tTYPE: {} " .format(room.name, room.room_type))
+				output += ("\n" + "-" * 40 + "\n")
+				for occupant in room.occupants:
+					output += (occupant.name + "-" + occupant.role + ", ")
+					
+
+
+
+		if filename == None:
+			return (text_format.CBOLD + output + text_format.CEND)
+		else:
+			print("Saving output data to file...")
+			txt_file = open(filename + ".txt", "w+")
+			txt_file.write(output)
+			txt_file.close()
+			return ("\nData has been successfully saved to {}.txt\n" .format(filename))
+			
+
+	def print_unallocated(self,filename):
+		"""This method prints a list of all staff and fellows,
+		that have not been allocated any office or living space.
+
+		"""
+		output = ""
+
+		if not self.officespace_waitinglist and not self.livingspace_waitinglist:
+			return (text_format.CBOLD + "\nThere are currently no unallocated Fellows or Staff.\nNothing saved to file.\n" 
+				+text_format.CEND)
+		else:
+			output = "\n\n LIST OF ALL UNALLOCATED STAFF AND FELLOWS\n" + "*" * 50 + "\n"
+			for person in itertools.chain(self.officespace_waitinglist, self.livingspace_waitinglist):
+				output += (person.name + " \t" + person.email + "\t" + person.role + "\n" )
+			
+
+		if filename == None:
+			return (text_format.CBOLD + output + text_format.CEND)
+		else:
+			print ("Saving unallocations list to file...")
+			txt_file = open(filename + ".txt", "w+")
+			txt_file.write(output)
+			txt_file.close()
+			return ("\nData has been successfully saved to {}.txt\n" .format(filename))
