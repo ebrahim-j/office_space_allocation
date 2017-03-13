@@ -11,7 +11,6 @@ class Staff(Person):
 	def __init__(self, name):
 		self.role = "STAFF"
 		self.name = name
-		self.wants_accomodation = wants_accomodation
 		self.email = ''
 		
 
