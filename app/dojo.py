@@ -176,6 +176,8 @@ class Dojo(object):
 				output += ("\n" + "-" * 40 + "\n")
 				for occupant in room.occupants:
 					output += (occupant.name + "-" + occupant.role + ", ")
+			else:
+				output = ("\n There are empty rooms. Add new Staff or Fellows to allocate\n\n")
 					
 
 
@@ -198,12 +200,12 @@ class Dojo(object):
 		output = ""
 
 		if not self.officespace_waitinglist and not self.livingspace_waitinglist:
-			return (text_format.CBOLD + "\nThere are currently no unallocated Fellows or Staff.\nNothing saved to file.\n" 
+			return (text_format.CBOLD + "\nThere are currently no unallocated Fellows or Staff.\n\n" 
 				+text_format.CEND)
 		else:
 			output = "\n\n LIST OF ALL UNALLOCATED STAFF AND FELLOWS\n" + "*" * 50 + "\n"
 			for person in itertools.chain(self.officespace_waitinglist, self.livingspace_waitinglist):
-				output += (person.name + " \t" + person.email + "\t" + person.role + "\n" )
+				output += (person.name + " \t" + person.email + "\t" + person.role +  "\n" )
 			
 
 		if filename == None:
