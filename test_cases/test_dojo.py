@@ -199,7 +199,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 			msg = "Reallocation was unsuccessful!" )
 
 	def test_load_people_successfully(self):
-		with open("LoadFile", "w+") as input_file:
+		with open("LoadFile.txt", "w+") as input_file:
 			input_file.write("RANDY RANDY@RANDY STAFF\n")
 			input_file.write("TYRESE TY@TY FELLOW Y")
 			input_file.write("HEATHER HEATH@HEATH FELLOW")
@@ -215,7 +215,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 			msg = "Error Loading Fellows")
 
 	def test_load_people_returns_error_if_file_is_empty(self):
-		text_file = open("LoadFile" + ".txt", "w+")
+		text_file = open("LoadFile.txt", "w+")
 		text_file.close()
 		result = self.the_dojo.load_people("Loadfile.txt")
 		self.assertEqual(result, "The file LoadFile.txt is empty!")
@@ -225,11 +225,11 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.assertTrue(os.path.isfile("Loadfile.txt"))
 		os.remove("Loadfile.txt")	
 
-	def test_load_people_invalid_format(self):
+	def test_load_people_invalid_entry(self):
 		with open("LoadFile.txt", "w+") as input_file:
-			input_file.write("TYRESE TY@TY Y FELLOW")
+			input_file.write("TYRESE TY@TY FELLOW Y N ")
 		result = self.the_dojo.load_people("LoadFile")
-		self.assertEqual(result, "Invalid data format in file")	
+		self.assertEqual(result, "Invalid entry!")	
 
 
 
