@@ -240,14 +240,14 @@ class Dojo(object):
 				+text_format.CEND)
 		else:
 			output = (text_format.CBOLD + "\n\n LIST OF ALL UNALLOCATED STAFF AND FELLOWS\n" + "*" * 50 + "\n" + text_format.CEND)
-			#for person in itertools.chain(self.officespace_waitinglist, self.livingspace_waitinglist): 
-			#	output += (person.name + " \t" + person.email + "\t" + person.role  "\n" )
-			#for person in self.officespace_waitinglist:
-			#	output += (text_format.CBOLD + person.name + " \t" + person.email + "\t" + person.role + "\t" + text_format.CEND +
-			#		text_format.CRED + "OFFICE SPACE" +text_format.CEND + "\n")
-			#for person in self.livingspace_waitinglist:
-			#	output += (text_format.CBOLD + person.name + " \t" + person.email + "\t" + person.role + "\t" + text_format.CEND +
-			#		text_format.CGREEN + "LIVING SPACE" +text_format.CEND + "\n")
+			for person in itertools.chain(self.officespace_waitinglist, self.livingspace_waitinglist): 
+				output += (person.name + " \t" + person.email + "\t" + person.role  "\n" )
+			for person in self.officespace_waitinglist:
+				output += (text_format.CBOLD + person.name + " \t" + person.email + "\t" + person.role + "\t" + text_format.CEND +
+					text_format.CRED + "OFFICE SPACE" +text_format.CEND + "\n")
+			for person in self.livingspace_waitinglist:
+				output += (text_format.CBOLD + person.name + " \t" + person.email + "\t" + person.role + "\t" + text_format.CEND +
+					text_format.CGREEN + "LIVING SPACE" +text_format.CEND + "\n")
 
 		if filename == None:
 			return (output)
