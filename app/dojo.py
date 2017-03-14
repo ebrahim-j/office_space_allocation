@@ -1,10 +1,9 @@
 import random
 import itertools
-import os
 
 from .person import Person, Fellow, Staff
 from .room import OfficeSpace, LivingSpace
-from ..text_styles import text_format
+from text_styles import text_format
 
 
 """This file defines all functionalities for our office 
