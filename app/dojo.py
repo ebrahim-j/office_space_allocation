@@ -3,7 +3,7 @@ import itertools
 
 from .person import Person, Fellow, Staff
 from .room import OfficeSpace, LivingSpace
-from text_styles import text_format
+from ..text_styles import text_format
 
 
 """This file defines all functionalities for our office 
@@ -29,7 +29,6 @@ class Dojo(object):
 		 before succesfully creating the room
 
 		 """
-
 		if not isinstance (room_type,str) or not isinstance (room_name,str):
 			raise ValueError("Can only be a string variable!")
 
@@ -82,7 +81,6 @@ class Dojo(object):
 			self.livingspace_waitinglist = list(set(self.livingspace_waitinglist) - set(successful_allocations))
 		
 			return
-
 					
 	def add_person(self, name, email_address, role, wants_accomodation="N"):
 		"""Add a new person to the Dojo and allocate 
@@ -118,7 +116,6 @@ class Dojo(object):
 		else:
 			return (text_format.CRED+"\nInvalid role! Specify either FELLOW or STAFF!\n"
 				+text_format.CEND)
-		
 			
 	def allocate_available_officespace(self,new_person):
 		"""This method gets all available offices, confirms if the
@@ -126,7 +123,6 @@ class Dojo(object):
 
 		"""
 		available_office = []
-		
 
 		for office_space in self.all_offices:
 			if len(office_space.occupants) < office_space.capacity:
@@ -146,8 +142,6 @@ class Dojo(object):
 			return (text_format.CGREEN +"{} has been added to the officespace waiting list\n" 
 				.format(new_person.name)
 				+ text_format.CEND)
-
-		
 
 	def allocate_available_livingspace(self, new_person):
 		"""This method gets all available living space, confirms if the
@@ -192,12 +186,10 @@ class Dojo(object):
 						output += ("\n" + occupant.name + "\t" + occupant.role + "\n")
 				else:
 					output+= ("\n\n\tThe {} {} has no occupants\n\n".format(room.room_type,room_name))
-		
 
 		return (text_format.CBOLD + output + text_format.CEND)
 
-
-	def print_allocations(self,filename):
+	def print_allocations(self,filename=None):
 		"""This method prints a list of all allocations at the Dojo. The registered
 		allocations can then be written to the specified text file
 
@@ -208,7 +200,6 @@ class Dojo(object):
 			return (text_format.CBOLD + "\n\nThere are currently no rooms to allocate.\n\n"
 				+text_format.CEND)
 
-
 		for room in itertools.chain(self.all_offices, self.all_livingspace):
 			if room.occupants:
 				output += ("\n\nROOM NAME: {} \tTYPE: {} " .format(room.name, room.room_type))
@@ -217,9 +208,6 @@ class Dojo(object):
 					output += (occupant.name + "-" + occupant.role + ", ")
 			else:
 				output = ("\n There are empty rooms. Add new Staff or Fellows to allocate\n\n")
-					
-
-
 
 		if filename == None:
 			return (text_format.CBOLD + output + text_format.CEND)
@@ -230,8 +218,7 @@ class Dojo(object):
 			txt_file.close()
 			return ("\nData has been successfully saved to {}.txt\n" .format(filename))
 			
-
-	def print_unallocated(self,filename):
+	def print_unallocated(self,filename=None):
 		"""This method prints a list of all staff and fellows,
 		that have not been allocated any office or living space.
 
