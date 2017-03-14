@@ -225,6 +225,12 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.assertTrue(os.path.isfile("Loadfile.txt"))
 		os.remove("Loadfile.txt")	
 
+	def test_load_people_invalid_format(self):
+		with open("LoadFile.txt", "w+") as input_file:
+			input_file.write("TYRESE TY@TY Y FELLOW")
+		result = self.the_dojo.load_people("LoadFile")
+		self.assertEqual(result, "Invalid data format in file")	
+
 
 
 
