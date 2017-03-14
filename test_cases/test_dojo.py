@@ -209,11 +209,11 @@ class TestDojoFunctionalities(unittest.TestCase):
 			input_file.write("TYRESE TY@TY FELLOW Y")
 			input_file.write("HEATHER HEATH@HEATH FELLOW")
 
-		initial_staff_count = self.the_dojo.all_staff
-		initial_fellow_count = self.the_dojo.all_fellows
+		initial_staff_count = len(self.the_dojo.all_staff)
+		initial_fellow_count = len(self.the_dojo.all_fellows)
 		self.the_dojo.load_people("LoadFile")
-		final_staff_count = self.the_dojo.all_staff
-		final_fellow_count = self.the_dojo.all_fellows
+		final_staff_count = len(self.the_dojo.all_staff)
+		final_fellow_count = len(self.the_dojo.all_fellows)
 		self.assertEqual(final_staff_count - initial_staff_count, 1,
 			msg = "Error loading Staff")
 		self.assertEqual(final_fellow_count - initial_fellow_count, 2,
