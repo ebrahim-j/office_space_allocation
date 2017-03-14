@@ -120,13 +120,13 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.assertTrue(os.path.isfile("file2.txt"))
 		os.remove("file2.txt")
 
-	def test_reallocate_person_returns_error_if_room_doesnot_exists(self):
+	def test_reallocate_person_returns_error_if_room_doesnot_exist(self):
 		self.the_dojo.create_room("office", "Red")
 		self.the_dojo.add_person("Pete", "pete@pete", "staff")
 		result =self.the_dojo.reallocate_person("pete@pete", "Green")
 		self.assertEqual(result, "The OFFICE Green doesnot exist!")
 
-	def test_reallocate_person_moves_person_successfully_to_specified_room(self):
+	def test_reallocate_person_successfully_reallocates_person(self):
 		self.the_dojo.create_room("office", "Red")
 		self.the_dojo.add_person("Pete", "pete@pete", "staff")
 		self.the_dojo.create_room("office", "Green")
@@ -188,7 +188,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.assertEqual(count_after_reallocation - count_before_reallocation, 1, 
 			msg = "Reallocation was unsuccessful!" )
 
-	def test_reallocate_person_successfully_reallocates_fellow_to_livingspace(self):
+	def test_reallocate_person_reallocates_fellow_to_livingspace(self):
 		self.the_dojo.create_room("office","Red")
 		self.the_dojo.create_room("livingspace", "Crimson")
 		self.the_dojo.add_person("Matt","matt@matt", "fellow", "y")
