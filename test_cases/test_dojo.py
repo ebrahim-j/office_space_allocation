@@ -114,6 +114,14 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.assertTrue(os.path.isfile("file2.txt"))
 		os.remove("file2.txt")
 
+	def test_reallocate_person_successfully(self):
+
+		pass
+
+	def test_load_people_successfully(self):
+
+		pass
+
 
 
 
