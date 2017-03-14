@@ -161,7 +161,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 		result = self.the_dojo.reallocate_person("pete@pete", "Crimson")
 		self.assertEqual(result, "Cannot reallocate STAFF to LIVING SPACE!")
 
-	def tese_reallocate_person_doesnot_reallocate_if_room_is_full(self):
+	def test_reallocate_person_doesnot_reallocate_if_room_is_full(self):
 		self.the_dojo.create_room("office", "Red")
 		self.the_dojo.add_person("Pete", "pete@pete", "staff")
 		self.the_dojo.add_person("Matt", "matt@matt", "staff")
