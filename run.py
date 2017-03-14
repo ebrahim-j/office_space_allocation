@@ -86,7 +86,7 @@ class Dojo_Interface(cmd.Cmd):
 	 	role = arg["<role>"]
 	 	accomodation_option = arg["<wants_accomodation>"]
 
-	 	if role== "Staff" and accomodation_option == "y":
+	 	if role.upper()== "Staff" and accomodation_option == "y":
 	 		print (text_format.CRED + "\nWARNING! Staff cannot be allocated accomodation space\n" +text_format.CEND)
 	 		return	
 
@@ -117,7 +117,7 @@ class Dojo_Interface(cmd.Cmd):
 		print(self.dojo_space.print_unallocated(filename))
 
 
-	def do_quit():
+	def do_quit(self, arg):
 		"""Quits interactive mode"""
 		print ('...soon I shall become a memory waiting to be erased')
 		print ('... Goodbye!')

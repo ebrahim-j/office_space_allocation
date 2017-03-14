@@ -1,10 +1,9 @@
 import random
 import itertools
-import os
 
 from .person import Person, Fellow, Staff
 from .room import OfficeSpace, LivingSpace
-from ..text_styles import text_format
+from text_styles import text_format
 
 
 """This file defines all functionalities for our office 
@@ -22,6 +21,7 @@ class Dojo(object):
 		self.all_staff = []
 		self.officespace_waitinglist = []
 		self.livingspace_waitinglist = []
+		self.status = False
 
 	def create_room(self, room_type, room_name):
 		"""Create a new room, either office or living space at the Dojo. 
@@ -29,17 +29,21 @@ class Dojo(object):
 		 before succesfully creating the room
 
 		 """
+
 		if not isinstance (room_type,str) or not isinstance (room_name,str):
 			raise ValueError("Can only be a string variable!")
+
 		if room_type.upper() == "OFFICE":
 			if room_name in [office.name for office in self.all_offices]:	
 				return (text_format.CRED + "\nWARNING! This office already exists!\n"
 				 +text_format.CEND)	
 			new_office = OfficeSpace(room_name)
 			self.all_offices.append(new_office)
-			return (text_format.CBOLD + "\nAn OFFICE called {} has been successfully created\n"
+			print (text_format.CBOLD + "\nAn OFFICE called {} has been successfully created\n"
 				.format(room_name)
-				+ text_format.CEND)
+				+ text_format.CEND)	
+			return (self.allocate_unallocated_person(room_type))	
+				
 
 		elif room_type.upper() == "LIVINGSPACE":
 			if room_name in [livingspace.name for livingspace in self.all_livingspace]:
@@ -47,13 +51,39 @@ class Dojo(object):
 					+text_format.CEND)
 			new_livingspace = LivingSpace(room_name)
 			self.all_livingspace.append(new_livingspace)
-			return (text_format.CBOLD + "\nA LIVING SPACE called {} has been successfully created\n"
+			print (text_format.CBOLD + "\nA LIVING SPACE called {} has been successfully created\n"
 				.format(room_name)
 				+ text_format.CEND)	
+			return (self.allocate_unallocated_person(room_type))
+
 		else:
 			return(text_format.CRED + "\nInvalid room type! Create either 'OFFICE' or 'LIVING SPACE'\n"
 				+text_format.CEND )
-				
+
+	def allocate_unallocated_person(self,room_type):
+
+		successful_allocations = []
+
+		if room_type.upper() == "OFFICE":
+			for each_person in self.officespace_waitinglist:
+				print (self.allocate_available_officespace(each_person))
+				if self.status == True:
+					successful_allocations.append(each_person)
+
+			#update officespace_waitinglist
+			self.officespace_waitinglist = list(set(self.officespace_waitinglist) - set(successful_allocations))		
+			
+		elif room_type.upper() == "LIVINGSPACE":
+			for each_person in self.livingspace_waitinglist:
+				print (self.allocate_available_livingspace(each_person))
+				if self.status ==True:
+					successful_allocations.append(each_person)
+			#update livingspace_waitinglist
+			self.livingspace_waitinglist = list(set(self.livingspace_waitinglist) - set(successful_allocations))
+		
+			return
+
+					
 	def add_person(self, name, email_address, role, wants_accomodation="N"):
 		"""Add a new person to the Dojo and allocate 
 		either office space or living space 
@@ -96,14 +126,17 @@ class Dojo(object):
 
 		"""
 		available_office = []
+		
 
 		for office_space in self.all_offices:
 			if len(office_space.occupants) < office_space.capacity:
 				available_office.append(office_space)
+		
 		#loop to check office space to be allocated exists
 		if available_office:
 			allocated_office_space = random.choice(available_office)
 			allocated_office_space.occupants.append(new_person)
+			self.status = True
 			return (text_format.CBOLD + "\n{} has been allocated the office {} \n" 
 				.format(new_person.name, allocated_office_space.name)
 				+text_format.CEND)
@@ -113,6 +146,7 @@ class Dojo(object):
 			return (text_format.CGREEN +"{} has been added to the officespace waiting list\n" 
 				.format(new_person.name)
 				+ text_format.CEND)
+
 		
 
 	def allocate_available_livingspace(self, new_person):
@@ -129,6 +163,7 @@ class Dojo(object):
 		if available_livingspace:
 			allocated_living_space= random.choice(available_livingspace)
 			allocated_living_space.occupants.append(new_person)
+			self.status = True
 			return (text_format.CBOLD + "\n{} has been allocated the livingspace {} \n" 
 				.format(new_person.name, allocated_living_space.name)
 				+text_format.CEND)
@@ -180,6 +215,8 @@ class Dojo(object):
 				output += ("\n" + "-" * 40 + "\n")
 				for occupant in room.occupants:
 					output += (occupant.name + "-" + occupant.role + ", ")
+			else:
+				output = ("\n There are empty rooms. Add new Staff or Fellows to allocate\n\n")
 					
 
 
@@ -202,16 +239,22 @@ class Dojo(object):
 		output = ""
 
 		if not self.officespace_waitinglist and not self.livingspace_waitinglist:
-			return (text_format.CBOLD + "\nThere are currently no unallocated Fellows or Staff.\nNothing saved to file.\n" 
+			return (text_format.CBOLD + "\nThere are currently no unallocated Fellows or Staff.\n\n" 
 				+text_format.CEND)
 		else:
-			output = "\n\n LIST OF ALL UNALLOCATED STAFF AND FELLOWS\n" + "*" * 50 + "\n"
-			for person in itertools.chain(self.officespace_waitinglist, self.livingspace_waitinglist):
-				output += (person.name + " \t" + person.email + "\t" + person.role + "\n" )
-			
+			output = (text_format.CBOLD + "\n\n LIST OF ALL UNALLOCATED STAFF AND FELLOWS\n" 
+				+ "*" * 50 + "\n" + text_format.CEND)
+			for person in self.officespace_waitinglist:
+				output += (text_format.CBOLD + person.name + " \t" + person.email + "\t" + person.role 
+					+ "\t" + text_format.CEND 
+					+ text_format.CRED + "OFFICE SPACE" +text_format.CEND + "\n")
+			for person in self.livingspace_waitinglist:
+				output += (text_format.CBOLD + person.name + " \t" + person.email + "\t" + person.role 
+					+ "\t" + text_format.CEND
+					+text_format.CGREEN + "LIVING SPACE" +text_format.CEND + "\n")
 
 		if filename == None:
-			return (text_format.CBOLD + output + text_format.CEND)
+			return (output)
 		else:
 			print ("Saving unallocations list to file...")
 			txt_file = open(filename + ".txt", "w+")
