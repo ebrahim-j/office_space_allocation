@@ -115,11 +115,6 @@ class TestDojoFunctionalities(unittest.TestCase):
 		\nData has been successfully saved to file2.txt\n"
 		self.assertEqual(output, expected_output)
 
-	def test_if_print_unallocated_filepath_exists(self):
-		self.the_dojo.print_unallocated("file2")
-		self.assertTrue(os.path.isfile("file2.txt"))
-		os.remove("file2.txt")
-
 	def test_reallocate_person_returns_error_if_room_doesnot_exist(self):
 		self.the_dojo.create_room("office", "Red")
 		self.the_dojo.add_person("Pete", "pete@pete", "staff")
@@ -219,17 +214,16 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.assertEqual(final_fellow_count - initial_fellow_count, 2,
 			msg = "Error Loading Fellows")
 
-	def test_load_people_returns_error_if_file_doesnot_exist(self):
-		result = self.the_dojo.load_people("LoadFile")
-		self.assertEqual(result, "The file LoadFile doesnot exist!")
-
-
-
 	def test_load_people_returns_error_if_file_is_empty(self):
 		text_file = open("LoadFile" + ".txt", "w+")
 		text_file.close()
 		result = self.the_dojo.load_people("Loadfile.txt")
 		self.assertEqual(result, "The file LoadFile.txt is empty!")
+
+	def test_load_people_filepath_exists(self):
+		self.the_dojo.load_people("Loadfile")
+		self.assertTrue(os.path.isfile("Loadfile.txt"))
+		os.remove("Loadfile.txt")	
 
 
 
