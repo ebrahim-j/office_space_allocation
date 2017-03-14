@@ -29,6 +29,10 @@ class Dojo(object):
 		 before succesfully creating the room
 
 		 """
+		if not isinstance(room_type, str) or not isinstance (room_name, str):
+			raise ValueError
+
+
 		if room_type.upper() == "OFFICE":
 			if room_name in [office.name for office in self.all_offices]:	
 				return (text_format.CRED + "\nWARNING! This office already exists!\n"
@@ -239,15 +243,16 @@ class Dojo(object):
 			return (text_format.CBOLD + "\nThere are currently no unallocated Fellows or Staff.\n\n" 
 				+text_format.CEND)
 		else:
-			output = (text_format.CBOLD + "\n\n LIST OF ALL UNALLOCATED STAFF AND FELLOWS\n" + "*" * 50 + "\n" + text_format.CEND)
-			for person in itertools.chain(self.officespace_waitinglist, self.livingspace_waitinglist): 
-				output += (person.name + " \t" + person.email + "\t" + person.role  "\n" )
+			output = (text_format.CBOLD + "\n\n LIST OF ALL UNALLOCATED STAFF AND FELLOWS\n" 
+				+ "*" * 50 + "\n" + text_format.CEND)
 			for person in self.officespace_waitinglist:
-				output += (text_format.CBOLD + person.name + " \t" + person.email + "\t" + person.role + "\t" + text_format.CEND +
-					text_format.CRED + "OFFICE SPACE" +text_format.CEND + "\n")
+				output += (text_format.CBOLD + person.name + " \t" + person.email + "\t" + person.role 
+					+ "\t" + text_format.CEND 
+					+ text_format.CRED + "OFFICE SPACE" +text_format.CEND + "\n")
 			for person in self.livingspace_waitinglist:
-				output += (text_format.CBOLD + person.name + " \t" + person.email + "\t" + person.role + "\t" + text_format.CEND +
-					text_format.CGREEN + "LIVING SPACE" +text_format.CEND + "\n")
+				output += (text_format.CBOLD + person.name + " \t" + person.email + "\t" + person.role 
+					+ "\t" + text_format.CEND
+					+text_format.CGREEN + "LIVING SPACE" +text_format.CEND + "\n")
 
 		if filename == None:
 			return (output)
