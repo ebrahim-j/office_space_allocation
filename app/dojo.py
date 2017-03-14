@@ -30,15 +30,10 @@ class Dojo(object):
 		 before succesfully creating the room
 
 		 """
-<<<<<<< HEAD
-		if not isinstance(room_type, str) or not isinstance (room_name, str):
-			raise ValueError
 
-
-=======
 		if not isinstance (room_type,str) or not isinstance (room_name,str):
 			raise ValueError("Can only be a string variable!")
->>>>>>> dba1d9d43cd840258ff032f6b8a90f59f9e15d79
+
 		if room_type.upper() == "OFFICE":
 			if room_name in [office.name for office in self.all_offices]:	
 				return (text_format.CRED + "\nWARNING! This office already exists!\n"
@@ -47,16 +42,10 @@ class Dojo(object):
 			self.all_offices.append(new_office)
 			print (text_format.CBOLD + "\nAn OFFICE called {} has been successfully created\n"
 				.format(room_name)
-<<<<<<< HEAD
 				+ text_format.CEND)	
 			return (self.allocate_unallocated_person(room_type))	
 				
 
-			
-=======
-				+ text_format.CEND)
-
->>>>>>> dba1d9d43cd840258ff032f6b8a90f59f9e15d79
 		elif room_type.upper() == "LIVINGSPACE":
 			if room_name in [livingspace.name for livingspace in self.all_livingspace]:
 				return (text_format.CRED + "\nWARNING! This livingspace already exists!\n" 
