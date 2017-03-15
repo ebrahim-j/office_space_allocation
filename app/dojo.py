@@ -283,19 +283,22 @@ class Dojo(object):
 		#reallocating to a livingspace
 		if new_room.room_type == "LIVING SPACE":
 			if person_reallocating.role == "STAFF":
-				return (text_format.CBOLD + "\nCannot reallocate STAFF to LIVING SPACE!\n" +text_format.CEND)
+				return (text_format.CBOLD + "\nCannot reallocate STAFF to LIVING SPACE!\n" 
+					+text_format.CEND)
 			if len(new_room.occupants) < 4:
 				for this_living_space in self.all_livingspace:
 					for occupant in this_living_space.occupants:
 						if occupant == person_reallocating:
-							current_room_allocation = this_living_space
-							if current_room_allocation == new_room:
-								return (text_format.CRED + "\nCannot reallocate to the same LIVINGSPACE\n" 
+							current_room = this_living_space
+							if current_room == new_room:
+								return (text_format.CRED + "\nCannot reallocate\
+								 to the same LIVINGSPACE\n" 
 									+ text_format.CEND)
 							else:
-								current_room_allocation.occupants.remove(person_reallocating)
+								current_room.occupants.remove(person_reallocating)
 								new_room.occupants.append(person_reallocating)
-								return (text_format.CBOLD + "\n{}-{} was succesfully reallocated to {} {}\n"
+								return (text_format.CBOLD + "\n{}-{} was succesfully\
+								 reallocated to {} {}\n"
 									.format(person_reallocating.role, person_reallocating.name,
 									 new_room.room_type,new_room.name) 
 									+ text_format.CEND)
@@ -310,14 +313,16 @@ class Dojo(object):
 				for this_office_space in self.all_offices:
 					for occupant in this_office_space.occupants:
 						if occupant == person_reallocating:
-							current_room_allocation = this_office_space
-							if current_room_allocation == new_room:
-								return (text_format.CRED + "\nCannot reallocate to the same OFFICE\n" 
+							current_room = this_office_space
+							if current_room == new_room:
+								return (text_format.CRED + "\nCannot reallocate\
+								 to the same OFFICE\n" 
 									+ text_format.CEND)
 							else:
-								current_room_allocation.occupants.remove(person_reallocating)
+								current_room.occupants.remove(person_reallocating)
 								new_room.occupants.append(person_reallocating)
-								return (text_format.CBOLD + "\n{}-{} was succesfully reallocated to {} {}\n"
+								return (text_format.CBOLD + "\n{}-{} was succesfully\
+								 reallocated to {} {}\n"
 									.format(person_reallocating.role, person_reallocating.name,
 									 new_room.room_type,new_room.name) 
 									+ text_format.CEND)
