@@ -257,30 +257,22 @@ class Dojo(object):
 		in this case their email address, to a the specified new room
 
 		"""
-		new_room = None
-		person_reallocating = None
-		
-		#check if a person with the email address exists
-		for member in itertools.chain(self.all_staff,self.all_fellows):
-			if member.email == emailaddress:
-				person_reallocating = member
 
-		if person_reallocating is None:
+		try:
+			person_reallocating = [member for member in itertools.chain(self.all_staff,self.all_fellows)
+			 if member.email == emailaddress][0]
+		except IndexError:
 			return (text_format.CRED + "\nCould not find person with email {}!\n"
 				.format(emailaddress)
 				+ text_format.CEND)
-
-		#checks if the room exists
-		for room in itertools.chain(self.all_offices, self.all_livingspace):
-			if room.name == new_roomname:
-				new_room = room	
-
-		if new_room is None:
+		try:
+			new_room = [room for room in itertools.chain(self.all_offices, self.all_livingspace)
+			 if room.name == new_roomname][0]
+		except IndexError:
 			return (text_format.CRED + "\nThe room {} does not exist!\n"
 				.format(new_roomname)
 				+ text_format.CEND)
 
-		#reallocating to a livingspace
 		if new_room.room_type == "LIVING SPACE":
 			if person_reallocating.role == "STAFF":
 				return (text_format.CBOLD +"\nCannot reallocate STAFF to LIVING SPACE!\n" 
@@ -288,47 +280,33 @@ class Dojo(object):
 			if person_reallocating.wants_accomodation != "Y":
 				return (text_format.CBOLD +"\nCannot reallocate! This FELLOW does not require LIVING SPACE!\n" 
 					+text_format.CEND)
-			if len(new_room.occupants) < 4:
-				for this_living_space in self.all_livingspace:
-					for occupant in this_living_space.occupants:
-						if occupant == person_reallocating:
-							current_room = this_living_space
-							if current_room == new_room:
-								return (text_format.CRED + "\nCannot reallocate to the same LIVINGSPACE\n"
-									+ text_format.CEND)
-							else:
-								current_room.occupants.remove(person_reallocating)
-								new_room.occupants.append(person_reallocating)
-								return (text_format.CBOLD + "\n{}-{} was succesfully \
-								 reallocated to {} {}\n".format(person_reallocating.role,
-								  person_reallocating.name,new_room.room_type,new_room.name) 
-								 + text_format.CEND)
-			else:
-				return(text_format.CRED + "\nThe room {} is full! Cannot reallocate {}-{}!\n"
+			if len(new_room.occupants) == 4:
+				return(text_format.CRED + "\nThe room {} is full! Can not reallocate {}-{}!\n"
 					.format(new_roomname, person_reallocating.role, person_reallocating.name)
 					+ text_format.CEND)
 
-		#reallocating office space
-		elif new_room.room_type == "OFFICE":
-			if len(new_room.occupants) < 6:
-				for this_office_space in self.all_offices:
-					for occupant in this_office_space.occupants:
-						if occupant == person_reallocating:
-							current_room = this_office_space
-							if current_room == new_room:
-								return (text_format.CRED + "\nCannot reallocate to the same OFFICE\n"
-									+ text_format.CEND)
-							else:
-								current_room.occupants.remove(person_reallocating)
-								new_room.occupants.append(person_reallocating)
-								return (text_format.CBOLD + "\n{}-{} was succesfully \
-								 reallocated to {} {}\n".format(person_reallocating.role,
-								  person_reallocating.name, new_room.room_type,new_room.name) 
-								 + text_format.CEND)
-			else:
-				return (text_format.CRED + "\nThe room {} is full! Cannot reallocate {}-{}!\n"
+		if new_room.room_type == "OFFICE" and len(new_room.occupants) == 6:
+			return (text_format.CRED + "\nThe room {} is full! Cannot reallocate {}-{}!\n"
 					.format(new_roomname, person_reallocating.role, person_reallocating.name)
 					+ text_format.CEND)
+
+
+		for room in itertools.chain(self.all_offices, self.all_livingspace):
+			for occupant in room.occupants:
+					if occupant == person_reallocating:
+						current_room = room
+
+		if current_room == new_room:
+			return (text_format.CRED + "\nCannot reallocate to the same {}\n"
+				.format(current_room.room_type)
+				+ text_format.CEND)
+		else:
+			current_room.occupants.remove(person_reallocating)
+			new_room.occupants.append(person_reallocating)
+		
+			return (text_format.CBOLD + "\n{}-{} was succesfully reallocated to {} {}\n"
+				.format(person_reallocating.role,person_reallocating.name,new_room.room_type,new_room.name)
+				 + text_format.CEND)
 
 	def load_people(self, filename):
 		"""This method adds people to rooms from a txt file.
