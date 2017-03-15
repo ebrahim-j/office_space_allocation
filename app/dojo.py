@@ -285,6 +285,9 @@ class Dojo(object):
 			if person_reallocating.role == "STAFF":
 				return (text_format.CBOLD +"\nCannot reallocate STAFF to LIVING SPACE!\n" 
 					+text_format.CEND)
+			if person_reallocating.wants_accomodation != "Y":
+				return (text_format.CBOLD +"\nCannot reallocate! This FELLOW does not require LIVING SPACE!\n" 
+					+text_format.CEND)
 			if len(new_room.occupants) < 4:
 				for this_living_space in self.all_livingspace:
 					for occupant in this_living_space.occupants:
