@@ -291,8 +291,8 @@ class Dojo(object):
 						if occupant == person_reallocating:
 							current_room = this_living_space
 							if current_room == new_room:
-								return (text_format.CRED + "\nCannot reallocate\
-								 to the same LIVINGSPACE\n" + text_format.CEND)
+								return (text_format.CRED + "\nCannot reallocate to the same LIVINGSPACE\n"
+									+ text_format.CEND)
 							else:
 								current_room.occupants.remove(person_reallocating)
 								new_room.occupants.append(person_reallocating)
@@ -313,8 +313,8 @@ class Dojo(object):
 						if occupant == person_reallocating:
 							current_room = this_office_space
 							if current_room == new_room:
-								return (text_format.CRED + "\nCannot reallocate\
-								 to the same OFFICE\n" + text_format.CEND)
+								return (text_format.CRED + "\nCannot reallocate to the same OFFICE\n"
+									+ text_format.CEND)
 							else:
 								current_room.occupants.remove(person_reallocating)
 								new_room.occupants.append(person_reallocating)
