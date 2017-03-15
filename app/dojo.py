@@ -31,7 +31,7 @@ class Dojo(object):
 
 		 """
 		if not isinstance (room_type,str) or not isinstance (room_name,str):
-			raise ValueError("Can only be a string variable!")
+			raise ValueError("Use only type string values")
 
 		if room_type.upper() == "OFFICE":
 			if room_name in [office.name for office in self.all_offices]:	
@@ -57,7 +57,7 @@ class Dojo(object):
 			return (self.allocate_unallocated_person(room_type))
 
 		else:
-			return(text_format.CRED + "\nInvalid room type! Create either 'OFFICE' or 'LIVING SPACE'\n"
+			return(text_format.CRED + "\nInvalid room type! Use either 'OFFICE' or 'LIVINGSPACE'\n"
 				+text_format.CEND )
 
 	def allocate_unallocated_person(self,room_type):
