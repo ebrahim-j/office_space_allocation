@@ -1,9 +1,10 @@
 import random
 import itertools
+import os
 
 from .person import Person, Fellow, Staff
 from .room import OfficeSpace, LivingSpace
-from ..text_styles import text_format
+from text_styles import text_format
 
 
 """This file defines all functionalities for our office 
@@ -80,7 +81,7 @@ class Dojo(object):
 			#update livingspace_waitinglist
 			self.livingspace_waitinglist = list(set(self.livingspace_waitinglist) - set(successful_allocations))
 		
-			return
+		return
 					
 	def add_person(self, name, email_address, role, wants_accomodation="N"):
 		"""Add a new person to the Dojo and allocate 
@@ -88,8 +89,9 @@ class Dojo(object):
 
 		"""
 		if role.upper() == "STAFF":
-			if email_address in [this_staff.email for this_staff in self.all_staff]:
-				return (text_format.CRED + "\nWARNING! Staff with this email_address already exists!\n"
+			if email_address in [this_member.email for this_member 
+			in itertools.chain(self.all_staff,self.all_fellows)]:
+				return (text_format.CRED + "\nWARNING! STAFF or FELLOW with this email_address already exists!\n"
 					+text_format.CEND)
 			new_staff = Staff(name)
 			new_staff.email = email_address
@@ -97,10 +99,11 @@ class Dojo(object):
 			print (text_format.CBOLD + "\nSTAFF {} has been successfully added\n" 
 				.format(name)
 				+text_format.CEND)			
-			return (self.allocate_available_officespace(new_staff))
+			print (self.allocate_available_officespace(new_staff))
 		elif role.upper() == "FELLOW":
-			if email_address in [this_fellow.email for this_fellow in self.all_fellows]:
-				return (text_format.CRED + "\nWARNING! Fellow with this email_address already exists!\n" 
+			if email_address in [this_member.email for this_member 
+			in itertools.chain(self.all_staff,self.all_fellows)]:
+				return (text_format.CRED + "\nWARNING! STAFF or FELLOW with this email_address already exists!\n"
 					+text_format.CEND)
 			new_fellow = Fellow(name, wants_accomodation)
 			new_fellow.email = email_address
@@ -248,3 +251,73 @@ class Dojo(object):
 			txt_file.write(output)
 			txt_file.close()
 			return ("\nData has been successfully saved to {}.txt\n" .format(filename))
+
+	def reallocate_person(self, emailaddress, roomname):
+		pass
+		"""This method reallocates a person using their unique identifier,
+		in this case their email address, to a the specified new room
+
+		unique_identifier = emailaddress
+		found_room = False
+		found_emailaddress = False
+
+		#checks if the emailaddress exists and returns the persons name associated
+		#with it
+		for room in itertools.chain(self.all_offices, self.all_livingspace):
+			if room.name == roomname:
+				if room.room_type == "OFFICE" and len(room.occupants) < 6:
+					new_room_allocation_type = room.room_type
+					new_room_allocation_name = room.name
+					found_room == True 
+				elif room.room_type == "LIVING SPACE" and len(room.occupants) < 4:
+					new_room_allocation_type = room.room_type
+					new_room_allocation_name = room.name 
+					found_room == True
+
+
+
+
+		if found_room:
+			for this_room in itertools.chain(self.all_offices, self.all_livingspace):
+				for occupant in this_room.occupants:
+					if occupant.email == emailaddress:
+						person_reallocating = occupant
+						print ("email address {} associated with {} {} has been found."
+							.format(emailaddress, occupant.role, occupant.name))
+						current_room_allocation_type = this_room.room_type
+						current_room_allocation_name =this_room.name"""
+
+	def load_people(self, filename):
+		"""This method adds people to rooms from a txt file.
+		The text input from the text file should have the following format
+		NAME EMAIL ROLE ACCOMODATION_OPTION
+
+		"""
+		if os.path.isfile(filename + ".txt"):
+			if os.stat(filename + ".txt").st_size:
+				with open(filename + ".txt") as input_file:
+					for line in input_file:
+						read_line = line.split()
+						if len(read_line) > 4 or len(read_line) < 3:
+							print (text_format.CRED + "\nInvalid entry!\n" + text_format.CEND)
+						try:
+							name = read_line[0]
+							email = read_line[1]
+							role = read_line[2]
+							accomodation_option = read_line[3]
+						except IndexError:
+							accomodation_option = "N"
+
+						self.add_person(name, email, role, accomodation_option)
+						
+			else:
+				print (text_format.CRED + "\nThe file {}.txt is empty!\n".format(filename) 
+					+text_format.CEND )
+		else:
+			print (text_format.CRED + "\nThe file {}.txt does not exist!\n".format(filename) 
+				+text_format.CEND)					
+
+		return
+
+
+		
