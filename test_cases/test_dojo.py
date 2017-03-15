@@ -203,7 +203,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.the_dojo.add_person("Pete", "pete@pete", "staff")
 		self.the_dojo.create_room("office","blue"):
 		result = self.the_dojo.reallocate_person("pat@pat", "blue")
-		self.assertEqual(result, "Couldnot find person with email pat@pat")
+		self.assertEqual(result, "Could not find person with email pat@pat")
 
 
 	def test_load_people_successfully(self):
