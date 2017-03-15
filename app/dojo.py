@@ -1,9 +1,10 @@
 import random
 import itertools
+import os
 
 from .person import Person, Fellow, Staff
 from .room import OfficeSpace, LivingSpace
-from ..text_styles import text_format
+from text_styles import text_format
 
 
 """This file defines all functionalities for our office 
@@ -30,7 +31,7 @@ class Dojo(object):
 
 		 """
 		if not isinstance (room_type,str) or not isinstance (room_name,str):
-			raise ValueError("Can only be a string variable!")
+			raise ValueError("Use only type string values")
 
 		if room_type.upper() == "OFFICE":
 			if room_name in [office.name for office in self.all_offices]:	
@@ -56,7 +57,7 @@ class Dojo(object):
 			return (self.allocate_unallocated_person(room_type))
 
 		else:
-			return(text_format.CRED + "\nInvalid room type! Create either 'OFFICE' or 'LIVING SPACE'\n"
+			return(text_format.CRED + "\nInvalid room type! Use either 'OFFICE' or 'LIVINGSPACE'\n"
 				+text_format.CEND )
 
 	def allocate_unallocated_person(self,room_type):
@@ -80,7 +81,7 @@ class Dojo(object):
 			#update livingspace_waitinglist
 			self.livingspace_waitinglist = list(set(self.livingspace_waitinglist) - set(successful_allocations))
 		
-			return
+		return
 					
 	def add_person(self, name, email_address, role, wants_accomodation="N"):
 		"""Add a new person to the Dojo and allocate 
@@ -88,8 +89,9 @@ class Dojo(object):
 
 		"""
 		if role.upper() == "STAFF":
-			if email_address in [this_staff.email for this_staff in self.all_staff]:
-				return (text_format.CRED + "\nWARNING! Staff with this email_address already exists!\n"
+			if email_address in [this_member.email for this_member 
+			in itertools.chain(self.all_staff,self.all_fellows)]:
+				return (text_format.CRED + "\nWARNING! STAFF or FELLOW with this email_address already exists!\n"
 					+text_format.CEND)
 			new_staff = Staff(name)
 			new_staff.email = email_address
@@ -97,10 +99,11 @@ class Dojo(object):
 			print (text_format.CBOLD + "\nSTAFF {} has been successfully added\n" 
 				.format(name)
 				+text_format.CEND)			
-			return (self.allocate_available_officespace(new_staff))
+			print (self.allocate_available_officespace(new_staff))
 		elif role.upper() == "FELLOW":
-			if email_address in [this_fellow.email for this_fellow in self.all_fellows]:
-				return (text_format.CRED + "\nWARNING! Fellow with this email_address already exists!\n" 
+			if email_address in [this_member.email for this_member 
+			in itertools.chain(self.all_staff,self.all_fellows)]:
+				return (text_format.CRED + "\nWARNING! STAFF or FELLOW with this email_address already exists!\n"
 					+text_format.CEND)
 			new_fellow = Fellow(name, wants_accomodation)
 			new_fellow.email = email_address
@@ -110,9 +113,13 @@ class Dojo(object):
 			print (self.allocate_available_officespace(new_fellow))
 
 			#checks whether fellow wants accomodation
-			if new_fellow.wants_accomodation== "y":
-				return (self.allocate_available_livingspace(new_fellow))
-						
+			try:
+				if new_fellow.wants_accomodation.upper() == "Y":
+					return (self.allocate_available_livingspace(new_fellow))
+			except AttributeError:
+				return
+			
+
 		else:
 			return (text_format.CRED+"\nInvalid role! Specify either FELLOW or STAFF!\n"
 				+text_format.CEND)
@@ -164,7 +171,7 @@ class Dojo(object):
 		else:
 			print (text_format.CRED + "\nWARNING!No available LIVING space"+text_format.CEND)
 			self.livingspace_waitinglist.append(new_person)
-			return (text_format.CGREEN + "{} has been added to the livingspace waiting list\n" 
+			print (text_format.CGREEN + "{} has been added to the livingspace waiting list\n" 
 				.format(new_person.name)
 				+ text_format.CEND)
 
@@ -248,3 +255,99 @@ class Dojo(object):
 			txt_file.write(output)
 			txt_file.close()
 			return ("\nData has been successfully saved to {}.txt\n" .format(filename))
+
+	def reallocate_person(self, emailaddress, new_roomname):
+		"""This method reallocates a person using their unique identifier,
+		in this case their email address, to a the specified new room
+
+		"""
+
+		try:
+			person_reallocating = [member for member in itertools.chain(self.all_staff,self.all_fellows)
+			 if member.email == emailaddress][0]
+		except IndexError:
+			return (text_format.CRED + "\nCould not find person with email {}!\n"
+				.format(emailaddress)
+				+ text_format.CEND)
+		try:
+			new_room = [room for room in itertools.chain(self.all_offices, self.all_livingspace)
+			 if room.name == new_roomname][0]
+		except IndexError:
+			return (text_format.CRED + "\nThe room {} does not exist!\n"
+				.format(new_roomname)
+				+ text_format.CEND)
+
+		if new_room.room_type == "LIVING SPACE":
+			if person_reallocating.role == "STAFF":
+				return (text_format.CBOLD +"\nCannot reallocate STAFF to LIVING SPACE!\n" 
+					+text_format.CEND)
+			if person_reallocating.wants_accomodation != "Y":
+				return (text_format.CBOLD +"\nCannot reallocate! This FELLOW does not require LIVING SPACE!\n" 
+					+text_format.CEND)
+			if len(new_room.occupants) == 4:
+				return(text_format.CRED + "\nThe room {} is full! Can not reallocate {}-{}!\n"
+					.format(new_roomname, person_reallocating.role, person_reallocating.name)
+					+ text_format.CEND)
+
+		if new_room.room_type == "OFFICE" and len(new_room.occupants) == 6:
+			return (text_format.CRED + "\nThe room {} is full! Cannot reallocate {}-{}!\n"
+					.format(new_roomname, person_reallocating.role, person_reallocating.name)
+					+ text_format.CEND)
+
+
+		for room in itertools.chain(self.all_offices, self.all_livingspace):
+			for occupant in room.occupants:
+					if occupant == person_reallocating:
+						current_room = room
+
+		if current_room == new_room:
+			return (text_format.CRED + "\nCannot reallocate to the same {}\n"
+				.format(current_room.room_type)
+				+ text_format.CEND)
+		else:
+			current_room.occupants.remove(person_reallocating)
+			new_room.occupants.append(person_reallocating)
+		
+			return (text_format.CBOLD + "\n{}-{} was succesfully reallocated to {} {}\n"
+				.format(person_reallocating.role,person_reallocating.name,new_room.room_type,new_room.name)
+				 + text_format.CEND)
+
+	def load_people(self, filename):
+		"""This method adds people to rooms from a txt file.
+		The text input from the text file should have the following format
+		NAME EMAIL ROLE ACCOMODATION_OPTION
+
+		"""
+		output = ''
+
+		if not os.path.isfile(filename + ".txt"):
+			return (text_format.CRED + "\nThe file {}.txt does not exist!\n"
+				.format(filename) 
+				+text_format.CEND)
+		if not os.stat(filename + ".txt").st_size:
+			return (text_format.CRED + "\nThe file {}.txt is empty!\n"
+				.format(filename) 
+				+text_format.CEND )
+
+		with open(filename + ".txt") as input_file:
+			for line in input_file:
+				read_line = line.split()
+				if len(read_line) > 4 or len(read_line) < 3:
+					print (text_format.CRED + "\nInvalid entry!\n" + text_format.CEND)
+				else:
+					output += (line + "\n")
+				try:
+					name = read_line[0]
+					email = read_line[1]
+					role = read_line[2]
+					accomodation_option = read_line[3]
+				except IndexError:
+					accomodation_option = "N"
+
+				self.add_person(name, email, role, accomodation_option)
+
+		return (text_format.CBOLD + "\tThe following data was loaded successfully\n" 
+			+ "_" * 60 + "\n\n" + output + "\n" +text_format.CEND)
+
+
+		
