@@ -8,7 +8,7 @@ class TestPerson(unittest.TestCase):
 		self.staff = Staff("Fai")
 
 	def test_person_role_is_fellow(self):
-		self.assertEqual(self.fellow.role, 'FELLOW',
+		self.assertEqual(self.fellow.role, 'FELLOW' ,
 			msg = 'Invalid role specified')
 
 	def test_person_role_is_staff(self):

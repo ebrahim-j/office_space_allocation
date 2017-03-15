@@ -215,7 +215,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 			msg = "Error Loading Fellows")
 
 	def test_load_people_returns_error_if_file_is_empty(self):
-		text_file = open("LoadFile.txt", "w+")
+		text_file = open("LoadFile" + ".txt", "w+")
 		text_file.close()
 		result = self.the_dojo.load_people("Loadfile.txt")
 		self.assertEqual(result, "The file LoadFile.txt is empty!")
