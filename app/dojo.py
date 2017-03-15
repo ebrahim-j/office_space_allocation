@@ -252,40 +252,58 @@ class Dojo(object):
 			txt_file.close()
 			return ("\nData has been successfully saved to {}.txt\n" .format(filename))
 
-	def reallocate_person(self, emailaddress, roomname):
-		pass
+	def reallocate_person(self, emailaddress, new_roomname):
 		"""This method reallocates a person using their unique identifier,
 		in this case their email address, to a the specified new room
 
-		unique_identifier = emailaddress
-		found_room = False
+		"""
+		#unique_identifier = emailaddress
+		new_room = None
+		new_room_vacant = False
+		person_reallocating = None
 		found_emailaddress = False
 
-		#checks if the emailaddress exists and returns the persons name associated
-		#with it
+		#check if a person with the email address exists
+		for member in itertools.chain(self.all_staff,self.all_fellows):
+			if member.email == emailaddress:
+				person_reallocating = member
+
+		if person_reallocating is None:
+			return (text_format.CRED + "\nCould not find person with email {}!\n"
+				.format(emailaddress)
+				+ text_format.CEND)
+
+		#checks if the room exists
 		for room in itertools.chain(self.all_offices, self.all_livingspace):
-			if room.name == roomname:
-				if room.room_type == "OFFICE" and len(room.occupants) < 6:
-					new_room_allocation_type = room.room_type
-					new_room_allocation_name = room.name
-					found_room == True 
-				elif room.room_type == "LIVING SPACE" and len(room.occupants) < 4:
-					new_room_allocation_type = room.room_type
-					new_room_allocation_name = room.name 
-					found_room == True
+			if room.name == new_roomname:
+				new_room = room	
+
+		if new_room is None:
+			return (text_format.CRED + "\nThe room {} does not exist!\n"
+				.format(new_roomname)
+				+ text_format.CEND)
+
+		#check if the room is vacant
+		if new_room.room_type == "OFFICE" and len(new_room.occupants) < 6:
+			new_room_vacant = True
+					
+		if new_room.room_type == "LIVINGSPACE" and len(new_room.occupants) < 4:
+			new_room_vacant = True
+
+		if new_room_vacant is False:
+			return (text_format.CRED + "\nThe room {} is full! Cannot reallocate {}-{}!\n"
+				.format(new_roomname, person_reallocating.role, person_reallocating.name)
+				+ text_format.CEND)
 
 
-
-
-		if found_room:
-			for this_room in itertools.chain(self.all_offices, self.all_livingspace):
-				for occupant in this_room.occupants:
-					if occupant.email == emailaddress:
-						person_reallocating = occupant
-						print ("email address {} associated with {} {} has been found."
-							.format(emailaddress, occupant.role, occupant.name))
-						current_room_allocation_type = this_room.room_type
-						current_room_allocation_name =this_room.name"""
+		"""for this_room in itertools.chain(self.all_offices, self.all_livingspace):
+									for occupant in this_room.occupants:
+										if occupant.email == emailaddress:
+											person_reallocating = occupant
+											print ("email address {} associated with {} {} has been found."
+												.format(emailaddress, occupant.role, occupant.name))
+											current_room_allocation_type = this_room.room_type
+											current_room_allocation_name =this_room.name"""
 
 	def load_people(self, filename):
 		"""This method adds people to rooms from a txt file.
