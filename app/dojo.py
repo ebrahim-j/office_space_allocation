@@ -113,7 +113,7 @@ class Dojo(object):
 			print (self.allocate_available_officespace(new_fellow))
 
 			#checks whether fellow wants accomodation
-			if new_fellow.wants_accomodation== "y":
+			if new_fellow.wants_accomodation.upper() == "Y":
 				return (self.allocate_available_livingspace(new_fellow))
 						
 		else:
@@ -167,7 +167,7 @@ class Dojo(object):
 		else:
 			print (text_format.CRED + "\nWARNING!No available LIVING space"+text_format.CEND)
 			self.livingspace_waitinglist.append(new_person)
-			return (text_format.CGREEN + "{} has been added to the livingspace waiting list\n" 
+			print (text_format.CGREEN + "{} has been added to the livingspace waiting list\n" 
 				.format(new_person.name)
 				+ text_format.CEND)
 
