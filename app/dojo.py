@@ -336,31 +336,36 @@ class Dojo(object):
 		NAME EMAIL ROLE ACCOMODATION_OPTION
 
 		"""
-		if os.path.isfile(filename + ".txt"):
-			if os.stat(filename + ".txt").st_size:
-				with open(filename + ".txt") as input_file:
-					for line in input_file:
-						read_line = line.split()
-						if len(read_line) > 4 or len(read_line) < 3:
-							print (text_format.CRED + "\nInvalid entry!\n" + text_format.CEND)
-						try:
-							name = read_line[0]
-							email = read_line[1]
-							role = read_line[2]
-							accomodation_option = read_line[3]
-						except IndexError:
-							accomodation_option = "N"
+		output = ''
 
-						self.add_person(name, email, role, accomodation_option)
-						
-			else:
-				print (text_format.CRED + "\nThe file {}.txt is empty!\n".format(filename) 
-					+text_format.CEND )
-		else:
-			print (text_format.CRED + "\nThe file {}.txt does not exist!\n".format(filename) 
-				+text_format.CEND)					
+		if not os.path.isfile(filename + ".txt"):
+			return (text_format.CRED + "\nThe file {}.txt does not exist!\n"
+				.format(filename) 
+				+text_format.CEND)
+		if not os.stat(filename + ".txt").st_size:
+			return (text_format.CRED + "\nThe file {}.txt is empty!\n"
+				.format(filename) 
+				+text_format.CEND )
 
-		return
+		with open(filename + ".txt") as input_file:
+			for line in input_file:
+				read_line = line.split()
+				if len(read_line) > 4 or len(read_line) < 3:
+					print (text_format.CRED + "\nInvalid entry!\n" + text_format.CEND)
+				else:
+					output += (line + "\n")
+				try:
+					name = read_line[0]
+					email = read_line[1]
+					role = read_line[2]
+					accomodation_option = read_line[3]
+				except IndexError:
+					accomodation_option = "N"
+
+				self.add_person(name, email, role, accomodation_option)
+
+		return (text_format.CBOLD + "\tThe following data was loaded successfully\n" 
+			+ "_" * 60 + "\n\n" + output + "\n" +text_format.CEND)
 
 
 		
