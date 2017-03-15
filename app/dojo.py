@@ -113,9 +113,13 @@ class Dojo(object):
 			print (self.allocate_available_officespace(new_fellow))
 
 			#checks whether fellow wants accomodation
-			if new_fellow.wants_accomodation.upper() == "Y":
-				return (self.allocate_available_livingspace(new_fellow))
-						
+			try:
+				if new_fellow.wants_accomodation.upper() == "Y":
+					return (self.allocate_available_livingspace(new_fellow))
+			except AttributeError:
+				return
+			
+
 		else:
 			return (text_format.CRED+"\nInvalid role! Specify either FELLOW or STAFF!\n"
 				+text_format.CEND)
