@@ -1,6 +1,10 @@
 import unittest
 import os
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from ..app.dbModels import RoomModel, PersonModel, Base
 from ..app.dojo import Dojo
 
 
@@ -239,6 +243,37 @@ class TestDojoFunctionalities(unittest.TestCase):
 		result = self.the_dojo.load_people("LoadFile")
 		self.assertEqual(result, "Invalid entry!")	
 
+	def test_save_state_database_file_exists(self):
+		self.the_dojo.save_state("sampleDB")
+		self.assertTrue(os.path.isfile("sampleDB.db"))
+		os.remove("sampleDB.db")
+
+	def test_save_state_successfuly_saves_data_to_DB(self):
+		self.the_dojo.create_room("office", "Red")
+		self.the_dojo.save_state("sampleDB")
+		engine = create_engine('sqlite:///sampleDB.db')
+		Base.metadata.bind = engine
+		DBSession = sessionmaker(bind=engine)
+		session = DBSession()
+		#check if data saved exists in db
+		existing = session.query(RoomModel).all()
+		self.assertTrue(existing)
+
+	def test_load_state_database_file_exists(self):
+		self.the_dojo.load_state("sampleDB")
+		self.assertTrue(os.path.isfile("sampleDB.db"))
+		os.remove("sampleDB.db")
+
+	def test_load_state_returns_error_when_wrong_DB_is_specified(self):
+		self.assertEqual(self.the_dojo.load_state("anotherDB"),
+		 "Wrong database specified!")
+		
+	def test_load_state_successfully_loads_data_into_application(self):
+		initial_count = len(self.the_dojo.all_offices)
+		self.the_dojo.load_state("sampleDB")
+		final_count = len(self.the_dojo.all_offices) 
+		self.assertEqual(final_count - initial_count, 1,
+		 msg="Failed to load data to application")
 
 
 
