@@ -202,10 +202,10 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.assertEqual(count_after_reallocation - count_before_reallocation, 1, 
 			msg = "Reallocation was unsuccessful!" )
 
-	def test-reallocate_person_returns_error_for_non_existent_person(self):
-		self.the_dojo.create_room("office","Red"):
+	def test_reallocate_person_returns_error_for_non_existent_person(self):
+		self.the_dojo.create_room("office","Red")
 		self.the_dojo.add_person("Pete", "pete@pete", "staff")
-		self.the_dojo.create_room("office","blue"):
+		self.the_dojo.create_room("office","blue")
 		result = self.the_dojo.reallocate_person("pat@pat", "blue")
 		self.assertEqual(result, "Could not find person with email pat@pat")
 
@@ -246,17 +246,27 @@ class TestDojoFunctionalities(unittest.TestCase):
 	def test_save_state_database_file_exists(self):
 		self.the_dojo.save_state("sampleDB")
 		self.assertTrue(os.path.isfile("sampleDB.db"))
-		os.remove("sampleDB.db")
+		#os.remove("sampleDB.db")
 
-	def test_save_state_successfuly_saves_data_to_DB(self):
+	def test_save_state_successfully_saves_room_data_to_DB(self):
 		self.the_dojo.create_room("office", "Red")
+		self.the_dojo.save_state("sampleDB")
+		#check if data saved exists in db
+		engine = create_engine('sqlite:///sampleDB.db')
+		Base.metadata.bind = engine
+		DBSession = sessionmaker(bind=engine)
+		session = DBSession()
+		existing = session.query(RoomModel).filter_by(room_name="Red").first()
+		self.assertTrue(existing)
+
+	def test_save_state_successfuly_saves_person_data_to_DB(self):
+		self.the_dojo.add_person("Pete", "pete@pete", "fellow", "y")
 		self.the_dojo.save_state("sampleDB")
 		engine = create_engine('sqlite:///sampleDB.db')
 		Base.metadata.bind = engine
 		DBSession = sessionmaker(bind=engine)
 		session = DBSession()
-		#check if data saved exists in db
-		existing = session.query(RoomModel).all()
+		existing = session.query(PersonModel).filter_by(email="pete@pete").first()
 		self.assertTrue(existing)
 
 	def test_load_state_database_file_exists(self):
