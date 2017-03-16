@@ -233,8 +233,8 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.assertEqual(result, "The file LoadFile.txt is empty!")
 
 	def test_load_people_filepath_exists(self):
-		self.the_dojo.load_people("Loadfile")
-		self.assertTrue(os.path.isfile("Loadfile.txt"))
+		self.the_dojo.load_people("LoadFile")
+		self.assertTrue(os.path.isfile("LoadFile.txt"))
 		os.remove("Loadfile.txt")	
 
 	def test_load_people_invalid_entry(self):
@@ -246,28 +246,27 @@ class TestDojoFunctionalities(unittest.TestCase):
 	def test_save_state_database_file_exists(self):
 		self.the_dojo.save_state("sampleDB")
 		self.assertTrue(os.path.isfile("sampleDB.db"))
-		#os.remove("sampleDB.db")
+		os.remove("sampleDB.db")
 
-	def test_save_state_successfully_saves_room_data_to_DB(self):
+	def test_save_and_load_room_data_to_DB(self):
+		self.the_dojo2 = Dojo()
 		self.the_dojo.create_room("office", "Red")
+		self.the_dojo2.create_room("livingspace", "Ruby")
 		self.the_dojo.save_state("sampleDB")
-		#check if data saved exists in db
-		engine = create_engine('sqlite:///sampleDB.db')
-		Base.metadata.bind = engine
-		DBSession = sessionmaker(bind=engine)
-		session = DBSession()
-		existing = session.query(RoomModel).filter_by(room_name="Red").first()
-		self.assertTrue(existing)
+		
+		self.the_dojo2.load_state("sampleDB")
+		self.assertEqual(len(self.the_dojo2.all_offices), 1)
+		self.assertEqual(len(self.the_dojo2.all_livingspace), 1)
 
-	def test_save_state_successfuly_saves_person_data_to_DB(self):
-		self.the_dojo.add_person("Pete", "pete@pete", "fellow", "y")
+	def test_save_and_load_persons_data_to_DB(self):
+		self.the_dojo2 = Dojo()
+		self.the_dojo.add_person("Pete","pete@pete","staff")
+		self.the_dojo.add_person("Tye", "ty@ty", "fellow", "y")
 		self.the_dojo.save_state("sampleDB")
-		engine = create_engine('sqlite:///sampleDB.db')
-		Base.metadata.bind = engine
-		DBSession = sessionmaker(bind=engine)
-		session = DBSession()
-		existing = session.query(PersonModel).filter_by(email="pete@pete").first()
-		self.assertTrue(existing)
+
+		self.the_dojo2.load_state("sampleDB")
+		self.assertEqual(len(self.the_dojo2.all_fellows), 1)
+		self.assertEqual(len(self.the_dojo2.all_staff), 1)
 
 	def test_load_state_database_file_exists(self):
 		self.the_dojo.load_state("sampleDB")
@@ -277,13 +276,6 @@ class TestDojoFunctionalities(unittest.TestCase):
 	def test_load_state_returns_error_when_wrong_DB_is_specified(self):
 		self.assertEqual(self.the_dojo.load_state("anotherDB"),
 		 "Wrong database specified!")
-		
-	def test_load_state_successfully_loads_data_into_application(self):
-		initial_count = len(self.the_dojo.all_offices)
-		self.the_dojo.load_state("sampleDB")
-		final_count = len(self.the_dojo.all_offices) 
-		self.assertEqual(final_count - initial_count, 1,
-		 msg="Failed to load data to application")
-
+	
 
 
