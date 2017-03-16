@@ -1,10 +1,6 @@
 import unittest
 import os
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-from ..app.dbModels import RoomModel, PersonModel, Base
 from ..app.dojo import Dojo
 
 
@@ -229,7 +225,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 	def test_load_people_returns_error_if_file_is_empty(self):
 		text_file = open("LoadFile" + ".txt", "w+")
 		text_file.close()
-		result = self.the_dojo.load_people("Loadfile.txt")
+		result = self.the_dojo.load_people("LoadFile.txt")
 		self.assertEqual(result, "The file LoadFile.txt is empty!")
 
 	def test_load_people_filepath_exists(self):
