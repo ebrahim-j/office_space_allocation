@@ -198,10 +198,10 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.assertEqual(count_after_reallocation - count_before_reallocation, 1, 
 			msg = "Reallocation was unsuccessful!" )
 
-	def test-reallocate_person_returns_error_for_non_existent_person(self):
-		self.the_dojo.create_room("office","Red"):
+	def test_reallocate_person_returns_error_for_non_existent_person(self):
+		self.the_dojo.create_room("office","Red")
 		self.the_dojo.add_person("Pete", "pete@pete", "staff")
-		self.the_dojo.create_room("office","blue"):
+		self.the_dojo.create_room("office","blue")
 		result = self.the_dojo.reallocate_person("pat@pat", "blue")
 		self.assertEqual(result, "Could not find person with email pat@pat")
 
@@ -225,12 +225,12 @@ class TestDojoFunctionalities(unittest.TestCase):
 	def test_load_people_returns_error_if_file_is_empty(self):
 		text_file = open("LoadFile" + ".txt", "w+")
 		text_file.close()
-		result = self.the_dojo.load_people("Loadfile.txt")
+		result = self.the_dojo.load_people("LoadFile.txt")
 		self.assertEqual(result, "The file LoadFile.txt is empty!")
 
 	def test_load_people_filepath_exists(self):
-		self.the_dojo.load_people("Loadfile")
-		self.assertTrue(os.path.isfile("Loadfile.txt"))
+		self.the_dojo.load_people("LoadFile")
+		self.assertTrue(os.path.isfile("LoadFile.txt"))
 		os.remove("Loadfile.txt")	
 
 	def test_load_people_invalid_entry(self):
@@ -239,6 +239,39 @@ class TestDojoFunctionalities(unittest.TestCase):
 		result = self.the_dojo.load_people("LoadFile")
 		self.assertEqual(result, "Invalid entry!")	
 
+	def test_save_state_database_file_exists(self):
+		self.the_dojo.save_state("sampleDB")
+		self.assertTrue(os.path.isfile("sampleDB.db"))
+		os.remove("sampleDB.db")
 
+	def test_save_and_load_room_data_to_DB(self):
+		self.the_dojo2 = Dojo()
+		self.the_dojo.create_room("office", "Red")
+		self.the_dojo2.create_room("livingspace", "Ruby")
+		self.the_dojo.save_state("sampleDB")
+		
+		self.the_dojo2.load_state("sampleDB")
+		self.assertEqual(len(self.the_dojo2.all_offices), 1)
+		self.assertEqual(len(self.the_dojo2.all_livingspace), 1)
+
+	def test_save_and_load_persons_data_to_DB(self):
+		self.the_dojo2 = Dojo()
+		self.the_dojo.add_person("Pete","pete@pete","staff")
+		self.the_dojo.add_person("Tye", "ty@ty", "fellow", "y")
+		self.the_dojo.save_state("sampleDB")
+
+		self.the_dojo2.load_state("sampleDB")
+		self.assertEqual(len(self.the_dojo2.all_fellows), 1)
+		self.assertEqual(len(self.the_dojo2.all_staff), 1)
+
+	def test_load_state_database_file_exists(self):
+		self.the_dojo.load_state("sampleDB")
+		self.assertTrue(os.path.isfile("sampleDB.db"))
+		os.remove("sampleDB.db")
+
+	def test_load_state_returns_error_when_wrong_DB_is_specified(self):
+		self.assertEqual(self.the_dojo.load_state("anotherDB"),
+		 "Wrong database specified!")
+	
 
 
