@@ -23,8 +23,8 @@ class PersonModel(Base):
 	name = Column(String(255), nullable=False)
 	email = Column(String(255), nullable=False)
 	role = Column(String(32))
-	office = Column(String(255), ForeignKey('room.name'))
-	livingspace	= Column(String(255), ForeignKey('room.name'))
+	office = Column(String(255))
+	livingspace	= Column(String(255))
 
 class UnallocationsModel(Base):
 	__tablename__ = 'unallocations'
