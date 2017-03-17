@@ -8,6 +8,8 @@ Usage:
 	Dojo print_unallocated [--o=filename]
 	Dojo load_people <filename>
 	Dojo reallocate_person <emailaddress> <new_roomname>
+	Dojo save_state <database_name>
+	Dojo load_state <database_name>
 """
 
 import cmd
@@ -135,6 +137,22 @@ class Dojo_Interface(cmd.Cmd):
 		new_room = arg["<new_roomname>"]
 
 		print(self.dojo_space.reallocate_person(email,new_room))
+
+	@docopt_cmd
+	def do_save_state(self, arg):
+		"""Usage: save_state <database_name>"""
+
+		db_name = arg["<database_name>"]
+
+		print(self.dojo_space.save_state(db_name))
+
+	@docopt_cmd
+	def do_load_state(self,arg):
+		"""Usage: load_state <database_name>"""
+
+		db_name = arg["<database_name>"]
+
+		print(self.dojo_space.load_state(db_name))
 
 
 	def do_quit(self, arg):
