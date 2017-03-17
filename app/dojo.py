@@ -1,7 +1,11 @@
+import os
 import random
 import itertools
-import os
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from .dbModels import Base, PersonModel, RoomModel, UnallocationsModel
 from .person import Person, Fellow, Staff
 from .room import OfficeSpace, LivingSpace
 from text_styles import text_format
@@ -59,6 +63,7 @@ class Dojo(object):
 		else:
 			return(text_format.CRED + "\nInvalid room type! Use either 'OFFICE' or 'LIVINGSPACE'\n"
 				+text_format.CEND )
+		
 
 	def allocate_unallocated_person(self,room_type):
 
@@ -349,5 +354,88 @@ class Dojo(object):
 		return (text_format.CBOLD + "\tThe following data was loaded successfully\n" 
 			+ "_" * 60 + "\n\n" + output + "\n" +text_format.CEND)
 
+	def save_state(self, db_name):
+		"""Saves all data from the app to a specified 
+		database
 
+		"""
+		engine = create_engine('sqlite:///' + db_name + '.db')
+		Base.metadata.bind = engine
+		DBSession = sessionmaker(bind=engine)
+		session = DBSession()
+
+		if db_name != "sampleDB":
+			output = "Use the database 'sampleDB' to save application data"
+		else:
+			for room in itertools.chain(self.all_offices,self.all_livingspace):
+				room_occupants = ",".join(room.occupants)
+				save_room = RoomModel(
+					room_name=room.name,
+					room_type=room.room_type,
+					capacity=room.capacity,
+					occupants=room_occupants
+					)
+				session.merge(save_room)
+			for person in itertools.chain(self.all_staff,self.all_fellows):
+				save_person = PersonModel(
+					name=person.name,
+					email=person.email,
+					role=person.role
+					)
+				session.merge(save_person)
+			for each_person in itertools.chain(self.officespace_waitinglist,
+			 self.livingspace_waitinglist):
+				office_unallocated = UnallocationsModel(
+					name=each_person.name,
+					email=each_person.email,
+					role=each_person.role,
+					accomodation=each_person.wants_accomodation
+					)
+				session.merge(save_unallocated) 
+
+			session.commit()
+			output = ("Application data successfully saved to database!")
+
+		return (text_format.CBOLD + output + text_format.CEND)
+
+	def load_state(self, db_name):
+		"""Loads all data from the database into the app
+
+		"""
+		engine = create_engine('sqlite:///' + db_name + '.db')
+		Base.metadata.bind = engine
+		DBSession = sessionmaker(bind=engine)
+		session = DBSession()
+
+		room_list = session.query(RoomModel).all()
+		person_list = session.query(PersonModel).all()
+		waiting_list = session.query(UnallocationsModel).all()
+
+		if db_name != "sampleDB":
+			output = ("Wrong db name! Select an existing db to load")
+		else:
+			for room in room_list:
+				all_occupants = room.occupants.split(", ")
+				room.occupants = all_occupants
+				if room.room_type == "OFFICE":
+					self.all_offices.append(room)
+				else:
+					self.all_livingspace.append(room)
 		
+			for person in person_list:
+				if person.role == "STAFF":
+					self.all_staff.append(person)
+				else:
+					self.all_fellows.append(person)
+
+			for each_person in waiting_list:
+				if each_person.role == "FELLOW" and each_person.accomodation == "y" or each_person.accomodation == "y":
+					self.livingspace_waitinglist.append(each_person)
+				else:
+					self.officespace_waitinglist.append(each_person)
+
+
+
+			output = ("Data successfully loaded to the Application")
+
+		return (text_format.CBOLD + output + text_format.CEND)
