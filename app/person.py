@@ -12,7 +12,9 @@ class Staff(Person):
 		self.role = "STAFF"
 		self.name = name
 		self.email = ''
-		
+		self.livingspace = ''
+		self.office = ''
+	
 
 class Fellow(Person):
 
@@ -21,3 +23,6 @@ class Fellow(Person):
 		self.wants_accomodation = wants_accomodation
 		self.role = "FELLOW"
 		self.email = ''
+		self.livingspace = ''
+		self.office = ''
+		
