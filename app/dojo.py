@@ -5,7 +5,7 @@ import itertools
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from .dbModels import Base, PersonModel, RoomModel, UnallocationsModel
+from .dbModels import Base, PersonModel, RoomModel
 from .person import Person, Fellow, Staff
 from .room import OfficeSpace, LivingSpace
 from text_styles import text_format
@@ -26,7 +26,6 @@ class Dojo(object):
 		self.all_staff = []
 		self.officespace_waitinglist = []
 		self.livingspace_waitinglist = []
-		self.db = ''
 		self.status = False
 
 	def create_room(self, room_type, room_name):
@@ -99,8 +98,7 @@ class Dojo(object):
 			in itertools.chain(self.all_staff,self.all_fellows)]:
 				return (text_format.CRED + "\nWARNING! STAFF or FELLOW with this email_address already exists!\n"
 					+text_format.CEND)
-			new_staff = Staff(name)
-			new_staff.email = email_address
+			new_staff = Staff(name, email_address)
 			self.all_staff.append(new_staff)
 			print (text_format.CBOLD + "\nSTAFF {} has been successfully added\n" 
 				.format(name)
@@ -111,8 +109,7 @@ class Dojo(object):
 			in itertools.chain(self.all_staff,self.all_fellows)]:
 				return (text_format.CRED + "\nWARNING! STAFF or FELLOW with this email_address already exists!\n"
 					+text_format.CEND)
-			new_fellow = Fellow(name, wants_accomodation)
-			new_fellow.email = email_address
+			new_fellow = Fellow(name, email_address, wants_accomodation)
 			self.all_fellows.append(new_fellow)
 			print (text_format.CBOLD + "\nFELLOW {} has been successfully added\n" .format(name)
 				+text_format.CEND)
@@ -363,8 +360,8 @@ class Dojo(object):
 
 		"""
 		try:
-			os.remove("{}.db".format(db_name))
-		except Exception as e:
+			os.path.remove(db_name + ".db")
+		except Exception:
 			pass
 
 		engine = create_engine('sqlite:///' + db_name + '.db')
@@ -377,79 +374,119 @@ class Dojo(object):
 			save_room = RoomModel(
 				name=room.name,
 				room_type=room.room_type,
-				capacity=room.capacity
+				capacity=room.capacity,
 				)
-			session.add(save_room)
+			existing = session.query(RoomModel).filter(
+				RoomModel.name==room.name).count()
+			if not existing:
+				session.add(save_room)
+			session.commit()
 
 		for person in itertools.chain(self.all_staff,self.all_fellows):
+			office_waiting = [each_person for each_person in self.officespace_waitinglist if each_person == person]
+			if office_waiting:
+				office_status = "UNALLOCATED"
+			else:
+				for office in self.all_offices:
+					office_allocated = [occupant for occupant in office.occupants if occupant==person]
+					if office_allocated:
+						office_status = office.name		 
+			livingspace_waiting = [each_person for each_person in self.livingspace_waitinglist if each_person == person]			 
+			if livingspace_waiting:
+				living_status = "UNALLOCATED"
+				
+			if person.role == "FELLOW" and person.wants_accomodation == "y":
+				for living in self.all_livingspace:
+					living_allocated = [occupant for occupant in living.occupants if occupant==person]
+					if living_allocated:
+						living_status = living.name
+			else:
+				living_status = "N/A"
+
 			save_person = PersonModel(
 				name=person.name,
 				email=person.email,
 				role=person.role,
-				office=person.office,
-				livingspace=person.livingspace,
+				office_space=office_status,
+				living_space=living_status
 				)
-			session.add(save_person)
-
-		for each_person in self.officespace_waitinglist:
-			office_unallocated = UnallocationsModel(
-				name=each_person.name,
-				email=each_person.email,
-				role=each_person.role,
-				space="OFFICE"
-				)
-			session.add(office_unallocated)
-
-		for each_person in self.livingspace_waitinglist:
-			livingspace_unallocated = UnallocationsModel(
-				name=each_person.name,
-				email=each_person.email,
-				role=each_person.role,
-				space="LIVING SPACE"
-				)
-			session.add(livingspace_unallocated) 
-
+			existing = session.query(PersonModel).filter(
+				PersonModel.email==person.email).count()
+			if not existing:
+				session.add(save_person)
 		session.commit()
-		output = ("Application data successfully saved to database!")
+
+		output = ("\n\nApplication data successfully saved to database!\n\n")
 		return (text_format.CBOLD + output + text_format.CEND)
 
+	
 	def load_state(self, db_name):
 		"""This method loads data from the db
 		into the application
-
 		"""
 		if not os.path.isfile(db_name + ".db"):
 			return (text_format.CRED + "\nThe database {}.db does not exist!\n"
 				.format(filename) 
 				+text_format.CEND)
-
+			
 		engine = create_engine('sqlite:///' + db_name + '.db')			
-		Base.metadata.bind = engine
 		DBSession = sessionmaker(bind=engine)
 		session = DBSession()
-		
-		room_list = session.query(RoomModel).all()
-		person_list = session.query(PersonModel).all()
-		waiting_list = session.query(UnallocationsModel).all()
 			
-
-		for room in room_list:
-			if room.room_type == "OFFICE":
-				self.all_offices.append(room)
-			else:
-				self.all_livingspace.append(room)
+		room_list = session.query(RoomModel).all()
+		person_list = session.query(PersonModel).all()	
+		#load persons
 		for person in person_list:
 			if person.role == "STAFF":
-				self.all_staff.append(person)
-			else:
-				self.all_fellows.append(person)
-		for each_person in waiting_list:
-			if each_person.space == "OFFICE":
-				self.livingspace_waitinglist.append(each_person)
-			else:
-				self.officespace_waitinglist.append(each_person)
-			
-			
-		output = ("Data successfully loaded to the Application")
-		return (text_format.CBOLD + output + text_format.CEND)	
-					
+				load_staff = Staff(person.name, person.email)
+				self.all_staff.append(load_staff)
+			if person.role == "FELLOW" and person.living_space == "N/A":
+				load_fellow = Fellow(person.name, person.email, "N")
+				self.all_fellows.append(load_fellow)
+			if person.role == "FELLOW" and person.living_space != "N/A":
+				load_fellow = Fellow(person.name, person.email, "Y")
+				self.all_fellows.append(load_fellow)					
+		#loading rooms and occupants	
+		for room in room_list:
+			if room.room_type == "OFFICE":
+				room_to_load = OfficeSpace(room.name)
+				self.all_offices.append(room_to_load)
+				office_occupants = [person for person in person_list
+				 if person.office_space == room.name]
+				for occupant in office_occupants:
+					if occupant.role == "FELLOW" and occupant.living_space =="N/A":
+						fellow_occupant = Fellow(occupant.name, occupant.email, "N")
+						room_to_load.occupants.append(fellow_occupant)
+					if occupant.role == "FELLOW" and occupant.living_space != "N/A":
+						fellow_occupant = Fellow(occupant.name, occupant.email, "y")
+						room_to_load.occupants.append(fellow_occupant)
+					if occupant.role == "STAFF":
+						staff_occupant = Staff(occupant.name, occupant.email)
+						room_to_load.occupants.append(staff_occupant)
+			if room.room_type == "LIVING SPACE":
+				room_to_load = LivingSpace(room.name)
+				self.all_livingspace.append(room_to_load)
+				living_occupants = [person for person in person_list
+				 if person.living_space == room.name]
+				for occupant in living_occupants:
+					fellow_occupant = Fellow(occupant.name, occupant.email, "Y")
+					room_to_load.occupants.append(fellow_occupant)
+		#load waiting lists
+		unallocated_office = [person for person in person_list if person.office_space == "UNALLOCATED"]
+		for person in unallocated_office :
+			if person.role == "STAFF":
+				staff_to_load = Staff(person.name, person.email)
+				self.officespace_waitinglist.append(staff_to_load)	
+			if person.role == "FELLOW" and person.living_space == "N/A":
+				fellow_to_load = Fellow(person.name, person.email, "N")
+				self.officespace_waitinglist.append(fellow_to_load)
+			if person.role == "FELLOW" and person.living_space != "N/A":
+				fellow_to_load = Fellow(person.name, person.email, "Y")
+				self.officespace_waitinglist.append(fellow_to_load)
+		unallocated_living = [person for person in person_list if person.living_space == "UNALLOCATED"]
+		for person in unallocated_living:
+			unallocated_fellow = Fellow(person.name, person.email, "Y")
+			self.livingspace_waitinglist.append(unallocated_fellow)
+
+		output = ("\nData successfully loaded to the Application\n\n")
+		return (text_format.CBOLD + output + text_format.CEND)
