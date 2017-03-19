@@ -228,8 +228,6 @@ class Dojo(object):
 				output += ("\n" + "-" * 40 + "\n")
 				for occupant in room.occupants:
 					output += (occupant.name + "-" + occupant.role + ", ")
-			else:
-				output = ("\n There are no allocations\n\n")
 
 		if filename == None:
 			return (text_format.CBOLD + output + text_format.CEND)
