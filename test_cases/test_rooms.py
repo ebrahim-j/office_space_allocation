@@ -4,6 +4,7 @@ from ..app.room import OfficeSpace, LivingSpace
 
 class TestCreateRoom(unittest.TestCase):
 	"""Test room creation """
+	
 	def setUp(self):
 		self.office_space = OfficeSpace("Red")
 		self.living_space = LivingSpace("Emerald")

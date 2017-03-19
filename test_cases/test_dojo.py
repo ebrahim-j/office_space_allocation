@@ -5,6 +5,8 @@ from ..app.dojo import Dojo
 
 
 class TestDojoFunctionalities(unittest.TestCase):
+	"""This class contains test methods for functionalities
+	defined in dojo.py file"""
 
 	def setUp(self):
 		self.the_dojo = Dojo()
@@ -90,6 +92,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 		expected_output = "Saving output data to file...\
 		\nData has been successfully saved to file1.txt\n"
 		self.assertEqual(output, expected_output)
+		os.remove("file1.txt")
 
 	def test_print_allocations_if_filepath_exists(self):
 		self.the_dojo.print_allocations("file1")
@@ -114,6 +117,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 		expected_output = "Saving unallocations list to file...\
 		\nData has been successfully saved to file2.txt\n"
 		self.assertEqual(output, expected_output)
+		os.remove("file2.txt")
 
 	def test_reallocate_person_returns_error_if_room_doesnot_exist(self):
 		self.the_dojo.create_room("office", "Red")
@@ -167,7 +171,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.the_dojo.create_room("office", "Green")
 		self.the_dojo.add_person("Marie", "maz@maz", "fellow","y")
 		result = self.the_dojo.reallocate_person("maz@maz", "Red")
-		self.assertEqual(result, "The room Red is full! Cannot reallocate FELLOW-Marie")
+		self.assertEqual(result, "The room Red is full! Cannot reallocate FELLOW-Marie!")
 
 	def test_reallocate_person_can_reallocate_a_fellow(self):
 		self.the_dojo.create_room("office", "Red")
@@ -203,7 +207,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.the_dojo.add_person("Pete", "pete@pete", "staff")
 		self.the_dojo.create_room("office","blue")
 		result = self.the_dojo.reallocate_person("pat@pat", "blue")
-		self.assertEqual(result, "Could not find person with email pat@pat")
+		self.assertEqual(result, "Could not find person with email pat@pat!")
 
 
 	def test_load_people_successfully(self):
@@ -231,7 +235,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 	def test_load_people_filepath_exists(self):
 		self.the_dojo.load_people("LoadFile")
 		self.assertTrue(os.path.isfile("LoadFile.txt"))
-		os.remove("Loadfile.txt")	
+		os.remove("LoadFile.txt")	
 
 	def test_load_people_invalid_entry(self):
 		with open("LoadFile.txt", "w+") as input_file:
@@ -271,7 +275,5 @@ class TestDojoFunctionalities(unittest.TestCase):
 
 	def test_load_state_returns_error_when_wrong_DB_is_specified(self):
 		self.assertEqual(self.the_dojo.load_state("anotherDB"),
-		 "Wrong database specified!")
+		 "The database anotherDB.db does not exist!")
 	
-
-
