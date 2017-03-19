@@ -5,6 +5,8 @@
 **Dojo Space Allocator** is a CLI app that digitizes room allocation for Fellow and Staff at The Dojo. **Staff** can only be allocated office space while **Fellows** are allocated office space and living space if they choose so.
 
 
+* Link to demo video: [![DOJO SPACE](https://asciinema.org/a/bd3lyntt30ngx87ttbsre6fxp.png)](https://asciinema.org/a/bd3lyntt30ngx87ttbsre6fxp)
+
 
 ## Installation and setup
 Clone the repo into a folder of your choice on your 'terminal'
