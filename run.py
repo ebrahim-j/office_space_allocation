@@ -79,7 +79,7 @@ class Dojo_Interface(cmd.Cmd):
 		
 
 		for roomname in roomnames:
-			return(self.dojo_space.create_room(roomtype, roomname))
+			print(self.dojo_space.create_room(roomtype, roomname))
 		
 
 	@docopt_cmd
