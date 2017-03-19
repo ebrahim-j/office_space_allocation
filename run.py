@@ -79,7 +79,7 @@ class Dojo_Interface(cmd.Cmd):
 		
 
 		for roomname in roomnames:
-			print(self.dojo_space.create_room(roomtype, roomname))
+			return(self.dojo_space.create_room(roomtype, roomname))
 		
 
 	@docopt_cmd
@@ -90,9 +90,10 @@ class Dojo_Interface(cmd.Cmd):
 	 	role = arg["<role>"]
 	 	accomodation_option = arg["<wants_accomodation>"]
 
-	 	if role.upper()== "Staff" and accomodation_option == "y":
-	 		print (text_format.CRED + "\nWARNING! Staff cannot be allocated accomodation space\n" +text_format.CEND)
-	 		return	
+	 	if role.upper() == "STAFF" and accomodation_option == "y":
+	 		print (text_format.CRED + "\nWARNING! Staff cannot be allocated accomodation space\n"
+	 		 +text_format.CEND)
+	 		return
 
 	 	print (self.dojo_space.add_person(name, email_address, role, accomodation_option))
 

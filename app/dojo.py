@@ -238,7 +238,8 @@ class Dojo(object):
 			txt_file = open(filename + ".txt", "w+")
 			txt_file.write(output)
 			txt_file.close()
-			return ("\nData has been successfully saved to {}.txt\n" .format(filename))
+			return ("\033[1m \nData has been successfully saved to {}.txt\n \033[0m"
+			 .format(filename))
 			
 	def print_unallocated(self,filename=None):
 		"""This method prints a list of all staff and fellows,
@@ -251,27 +252,28 @@ class Dojo(object):
 			return (text_format.CBOLD + "\nThere are currently no unallocated Fellows or Staff.\n\n"
 			 +text_format.CEND)
 		else:
-			output = (text_format.CBOLD + "\n\n LIST OF ALL UNALLOCATED STAFF AND FELLOWS\n"\
-				+ "*" * 50 + "\n" + text_format.CEND)
+			output = ("\n\n LIST OF ALL UNALLOCATED STAFF AND FELLOWS\n"\
+				+ "*" * 50 + "\n")
 			for person in self.officespace_waitinglist:
-				output += (text_format.CBOLD + person.name + " \t"
+				output += (person.name + " \t"
 						   + person.email + "\t" + person.role 
-						   + "\t" + text_format.CEND + text_format.CRED
+						   + "\t" + text_format.CRED
 						   + "OFFICE SPACE" +text_format.CEND + "\n")
 			for person in self.livingspace_waitinglist:
 				output += (text_format.CBOLD + person.name + " \t"
 						   + person.email + "\t" + person.role
-						   + "\t" + text_format.CEND +text_format.CGREEN
+						   + "\t" + text_format.CGREEN
 						   + "LIVING SPACE" +text_format.CEND + "\n")
 
 		if filename == None:
-			return (output)
+			return (text_format.CBOLD + output + text_format.CEND)
 		else:
 			print ("Saving unallocations list to file...")
 			txt_file = open(filename + ".txt", "w+")
 			txt_file.write(output)
 			txt_file.close()
-			return ("\nData has been successfully saved to {}.txt\n" .format(filename))
+			return ("\033[1m \nData has been successfully saved to {}.txt\n \033[0m"
+			 .format(filename))
 
 	def reallocate_person(self, emailaddress, new_roomname):
 		"""This method reallocates a person using their unique identifier,
@@ -444,9 +446,9 @@ class Dojo(object):
 		"""This method loads data from the db
 		into the application
 		"""
-		if not os.path.isfile(db_name + ".db"):
+		if not os.path.isfile("{}.db".format(db_name)):
 			return (text_format.CRED + "\nThe database {}.db does not exist!\n"
-				.format(filename) 
+				.format(db_name) 
 				+text_format.CEND)
 			
 		engine = create_engine('sqlite:///' + db_name + '.db')
