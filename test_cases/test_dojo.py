@@ -55,7 +55,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 	def test_print_room_returns_error_message_if_room_doesnot_exist(self):
 		self.the_dojo.create_room("office","blue")
 		self.assertEqual(self.the_dojo.print_room("red"),
-		 "\n\tThe room red does not exist!\n")
+		 "\x1b[1m\n\tThe room red does not exist!\n\x1b[0m")
 
 	def test_print_room_prints_all_occupants_if_room_is_office(self):
 		self.the_dojo.create_room("office","Purple")
@@ -123,7 +123,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.the_dojo.create_room("office", "Red")
 		self.the_dojo.add_person("Pete", "pete@pete", "staff")
 		result =self.the_dojo.reallocate_person("pete@pete", "Green")
-		self.assertEqual(result, "The room Green doesnot exist!")
+		self.assertEqual(result, "\x1b[31m\nThe room Green does not exist!\n\x1b[0m")
 
 	def test_reallocate_person_successfully_reallocates_person(self):
 		self.the_dojo.create_room("office", "Red")
@@ -158,7 +158,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.the_dojo.add_person("Pete", "pete@pete", "staff")
 		self.the_dojo.create_room("livingspace", "Crimson")
 		result = self.the_dojo.reallocate_person("pete@pete", "Crimson")
-		self.assertEqual(result, "Cannot reallocate STAFF to LIVING SPACE!")
+		self.assertEqual(result, "\x1b[1m\nCannot reallocate STAFF to LIVING SPACE!\n\x1b[0m")
 
 	def test_reallocate_person_doesnot_reallocate_if_room_is_full(self):
 		self.the_dojo.create_room("office", "Red")
@@ -171,7 +171,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.the_dojo.create_room("office", "Green")
 		self.the_dojo.add_person("Marie", "maz@maz", "fellow","y")
 		result = self.the_dojo.reallocate_person("maz@maz", "Red")
-		self.assertEqual(result, "The room Red is full! Cannot reallocate FELLOW-Marie!")
+		self.assertEqual(result, "\x1b[31m\nThe room Red is full! Cannot reallocate FELLOW-Marie!\n\x1b[0m")
 
 	def test_reallocate_person_can_reallocate_a_fellow(self):
 		self.the_dojo.create_room("office", "Red")
@@ -207,7 +207,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.the_dojo.add_person("Pete", "pete@pete", "staff")
 		self.the_dojo.create_room("office","blue")
 		result = self.the_dojo.reallocate_person("pat@pat", "blue")
-		self.assertEqual(result, "Could not find person with email pat@pat!")
+		self.assertEqual(result, "\x1b[31m\nCould not find person with email pat@pat!\n\x1b[0m")
 
 
 	def test_load_people_successfully(self):
@@ -230,7 +230,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 		text_file = open("LoadFile" + ".txt", "w+")
 		text_file.close()
 		result = self.the_dojo.load_people("LoadFile.txt")
-		self.assertEqual(result, "The file LoadFile.txt is empty!")
+		self.assertEqual(result, "\x1b[31m\nThe file LoadFile.txt.txt does not exist!\n\x1b[0m")
 
 	def test_load_people_filepath_exists(self):
 		self.the_dojo.load_people("LoadFile")
@@ -275,5 +275,5 @@ class TestDojoFunctionalities(unittest.TestCase):
 
 	def test_load_state_returns_error_when_wrong_DB_is_specified(self):
 		self.assertEqual(self.the_dojo.load_state("anotherDB"),
-		 "The database anotherDB.db does not exist!")
+		 "\x1b[31m\nThe database anotherDB.db does not exist!\n\x1b[0m")
 	
