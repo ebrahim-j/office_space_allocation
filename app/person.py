@@ -1,23 +1,24 @@
 class Person(object):
-
-	def __init__(self, name, role, wants_accomodation="N"):
+	"""This class describes each instance of person"""
+	def __init__(self,name, email):
 		self.name = name
-		self.role = role
-		self.wants_accomodation = wants_accomodation
+		self.email = email
 
 
 class Staff(Person):
+	"""This class describes each instance of Staff"""
 
-	def __init__(self, name):
+	def __init__(self, name, email):
+		super(Staff, self).__init__(name,email)
 		self.role = "STAFF"
-		self.name = name
-		self.email = ''
+		self.wants_accomodation = "N"
 		
 
 class Fellow(Person):
+	"""This class defines each instance Fellow"""
 
-	def __init__(self, name, wants_accomodation="N"):
-		self.name = name
-		self.wants_accomodation = wants_accomodation
+	def __init__(self, name, email, wants_accomodation="N"):
+		super(Fellow, self).__init__(name,email)
 		self.role = "FELLOW"
-		self.email = ''
+		self.wants_accomodation = wants_accomodation
+		
