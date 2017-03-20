@@ -92,7 +92,7 @@ class Dojo(object):
 			updated_list = list(set(self.livingspace_waitinglist) - set(successful_allocations))
 			self.livingspace_waitinglist = updated_list
 		
-		return
+		
 					
 	def add_person(self, name, email_address, role, wants_accomodation="N"):
 		"""Add a new person to the Dojo and allocate 
@@ -102,8 +102,8 @@ class Dojo(object):
 		if role.upper() == "STAFF":
 			if email_address in [this_member.email for this_member 
 			in itertools.chain(self.all_staff,self.all_fellows)]:
-				return (text_format.CRED + "\nWARNING! STAFF or FELLOW with this\
-					email_address already exists!\n"
+				return (text_format.CRED 
+					+ "\nWARNING! STAFF or FELLOW with this email_address already exists!\n"
 					+text_format.CEND)
 			new_staff = Staff(name, email_address)
 			self.all_staff.append(new_staff)
@@ -114,8 +114,8 @@ class Dojo(object):
 		elif role.upper() == "FELLOW":
 			if email_address in [this_member.email for this_member 
 			in itertools.chain(self.all_staff,self.all_fellows)]:
-				return (text_format.CRED + "\nWARNING! STAFF or FELLOW with this\
-					email_address already exists!\n"
+				return (text_format.CRED 
+					+ "\nWARNING! STAFF or FELLOW with this email_address already exists!\n"
 					+text_format.CEND)
 			new_fellow = Fellow(name, email_address, wants_accomodation)
 			self.all_fellows.append(new_fellow)
@@ -126,7 +126,7 @@ class Dojo(object):
 			#checks whether fellow wants accomodation
 			try:
 				if new_fellow.wants_accomodation.upper() == "Y":
-					return (self.allocate_available_livingspace(new_fellow))
+					print (self.allocate_available_livingspace(new_fellow))
 			except AttributeError:
 				return
 			
@@ -301,10 +301,10 @@ class Dojo(object):
 			if person_reallocating.role == "STAFF":
 				return (text_format.CBOLD +"\nCannot reallocate STAFF to LIVING SPACE!\n" 
 					+text_format.CEND)
-			if person_reallocating.wants_accomodation != "Y":
-				return (text_format.CBOLD +"\nCannot reallocate! This FELLOW does not\
-				 require LIVING SPACE!\n" 
-					+text_format.CEND)
+			if person_reallocating.wants_accomodation != "y":
+				return (text_format.CBOLD 
+					+"\nCannot reallocate! This FELLOW does not require LIVING SPACE!\n" 
+					+ text_format.CEND)
 			if len(new_room.occupants) == 4:
 				return(text_format.CRED + "\nThe room {} is full! Can not reallocate {}-{}!\n"
 					.format(new_roomname,
@@ -403,7 +403,7 @@ class Dojo(object):
 		for person in itertools.chain(self.all_staff,self.all_fellows):
 			livingspace_waiting = [each_person for each_person\
 			 	 in self.livingspace_waitinglist if each_person == person]
-			if person.role == "FELLOW" and person.wants_accomodation == "y":
+			if person.role == "FELLOW" and person.wants_accomodation == "Y":
 				for living in self.all_livingspace:
 					living_allocated = [occupant for occupant in living.occupants\
 					 if occupant == person]
@@ -414,14 +414,15 @@ class Dojo(object):
 			else:
 				living_status = "N/A"			 	 
 
+			office_status = "UNALLOCATED"	
 			if self.all_offices:	
 				for office in self.all_offices:
 					office_allocated = [occupant for occupant\
 					 in office.occupants if occupant == person]
 					if office_allocated:
 						office_status = office.name
-			else:
-				office_status = "UNALLOCATED"	
+					#else:
+					#	office_status = "UNALLOCATED"	
 
 			save_person = PersonModel(
 				name=person.name,

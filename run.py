@@ -79,7 +79,7 @@ class Dojo_Interface(cmd.Cmd):
 		
 
 		for roomname in roomnames:
-			print(self.dojo_space.create_room(roomtype, roomname))
+			self.dojo_space.create_room(roomtype, roomname)
 		
 
 	@docopt_cmd
@@ -95,7 +95,7 @@ class Dojo_Interface(cmd.Cmd):
 	 		 +text_format.CEND)
 	 		return
 
-	 	print (self.dojo_space.add_person(name, email_address, role, accomodation_option))
+	 	self.dojo_space.add_person(name, email_address, role, accomodation_option)
 
 	
 	@docopt_cmd
