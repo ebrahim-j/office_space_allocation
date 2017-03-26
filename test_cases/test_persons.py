@@ -18,9 +18,9 @@ class TestPerson(unittest.TestCase):
 			self.staff.role, 'STAFF',
 			msg = 'Invalid role specified')
 
-	def test_fellow_valid_accomodation_option(self):
+	def test_staff_invalid_accomodation_option(self):
 		self.assertEqual(
-			self.fellow.wants_accomodation,'Y',
+			self.staff.wants_accomodation,'N',
 			msg = 'Invalid option')
 
 	
