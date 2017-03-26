@@ -223,7 +223,7 @@ class Dojo(object):
 
 		for room in itertools.chain(self.all_offices, self.all_livingspace):
 			if room.occupants:
-				output += ("\n\nROOM NAME: {} \tTYPE: {} "\
+				output += ("\n\nROOM NAME: {} \tTYPE: {} "
 				 .format(room.name, room.room_type))
 				output += ("\n" + "-" * 40 + "\n")
 				for occupant in room.occupants:
@@ -253,12 +253,12 @@ class Dojo(object):
 			output = ("\n\n LIST OF ALL UNALLOCATED STAFF AND FELLOWS\n"\
 				+ "*" * 50 + "\n")
 			for person in self.officespace_waitinglist:
-				output += (person.name + " \t"
+				output += (person.name + "\t"
 						   + person.email + "\t" + person.role 
 						   + "\t" + text_format.CRED
 						   + "OFFICE SPACE" +text_format.CEND + "\n")
 			for person in self.livingspace_waitinglist:
-				output += (text_format.CBOLD + person.name + " \t"
+				output += (text_format.CBOLD + person.name + "\t"
 						   + person.email + "\t" + person.role
 						   + "\t" + text_format.CGREEN
 						   + "LIVING SPACE" +text_format.CEND + "\n")

@@ -50,7 +50,9 @@ class TestDojoFunctionalities(unittest.TestCase):
 	def test_print_room_returns_error_message_if_room_is_empty(self):
 		self.the_dojo.create_room("office","Green")
 		output = self.the_dojo.print_room("Green")
-		self.assertEqual(output, "\n\n\tThe OFFICE Green has no occupants\n\n")
+		expected_output =("\x1b[1m\n LIST OF ALL OCCUPANTS IN OFFICE Green\n" 
+			+ "*" * 50 + "\n\n\tThe OFFICE Green has no occupants\n\n\x1b[0m") 
+		self.assertEqual(output, expected_output)
 
 	def test_print_room_returns_error_message_if_room_doesnot_exist(self):
 		self.the_dojo.create_room("office","blue")
@@ -61,17 +63,18 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.the_dojo.create_room("office","Purple")
 		self.the_dojo.add_person("Pete","pete@pete","Staff")
 		output = self.the_dojo.print_room("Purple")
-		expected_output =("\n LIST OF ALL OCCUPANTS IN OFFICE Purple\n" + "*" * 50 
-			+ "\n" + "Pete" + "\t" + "STAFF" + "\n")
+		expected_output =("\x1b[1m\n LIST OF ALL OCCUPANTS IN OFFICE Purple\n" 
+			+ "*" * 50 + "\n" 
+			+ "Pete" + "\t" + "STAFF" + "\n\x1b[0m")
 		self.assertEqual(output, expected_output)
 
 	def test_print_room_prints_all_occupants_if_room_is_livingspace(self):
 		self.the_dojo.create_room("livingspace", "Ruby")
 		self.the_dojo.add_person("Marie", "marie@marie.com","Fellow", "y")
 		output = self.the_dojo.print_room("Ruby")
-		expected_output = ("\n LIST OF ALL OCCUPANTS IN LIVING SPACE Ruby\n" 
-			+ "*" * 40 + "\n" 
-			+ "\n" + "Marie" + "\t" + "FELLOW" + "\n")
+		expected_output = ("\x1b[1m\n LIST OF ALL OCCUPANTS IN LIVING SPACE Ruby\n" 
+			+ "*" * 50 + "\n" 
+			+ "Marie" + "\t" + "FELLOW" + "\n\x1b[0m")
 		self.assertEqual(output, expected_output)
 
 	def test_print_allocations_with_filename_unspecified(self):
@@ -79,8 +82,8 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.the_dojo.add_person("Marie", "marie@marie.com","Fellow", "y")
 		self.the_dojo.add_person("Pete","pete@pete","Staff")
 		output = self.the_dojo.print_allocations()
-		expected_output = ("\n\n\tRed\t" + "OFFICE\n" + "-" * 50 
-			+ "\n\tMarie - FELLOW, Pete - STAFF,\n")
+		expected_output = ("\x1b[1m\n\nROOM NAME: Red \tTYPE: OFFICE " + "\n" + "-" * 40
+			+ "\nMarie-FELLOW, Pete-STAFF, \033[0m")
 		self.assertEqual(output, expected_output)
 
 	def test_print_allocations_with_filename_specified(self):
@@ -89,12 +92,13 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.the_dojo.add_person("Marie", "marie@marie.com","Fellow", "y")
 		self.the_dojo.add_person("Pete","pete@pete","Staff")
 		output = self.the_dojo.print_allocations("file1")
-		expected_output = "Saving output data to file...\
-		\nData has been successfully saved to file1.txt\n"
+		expected_output = "\033[1m \nData has been successfully saved to file1.txt\n \033[0m"
 		self.assertEqual(output, expected_output)
 		os.remove("file1.txt")
 
 	def test_print_allocations_if_filepath_exists(self):
+		self.the_dojo.create_room("office", "Red")
+		self.the_dojo.add_person("Pete", "pete@pete", "staff")
 		self.the_dojo.print_allocations("file1")
 		self.assertTrue(os.path.isfile("file1.txt"))
 		os.remove("file1.txt")
@@ -103,19 +107,18 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.the_dojo.add_person("Marie", "marie@marie.com","Fellow", "y")
 		self.the_dojo.add_person("Pete","pete@pete","Staff")
 		output = self.the_dojo.print_unallocated()
-		expected_output = ("\n\n LIST OF ALL UNALLOCATED STAFF AND FELLOWS\n" 
-			+ "*" * 50 
-			+ "\n\tMarie\tmarie@marie.com\tFellow\tOFFICE SPACE\n" 
-			+ "\n\tPete\tpete@pete.com\tStaff\tOFFICE SPACE\n"
-			+ "\n\tMarie\tmarie@marie.com\tFellow\tLIVING SPACE\n" )
+		expected_output = ("\x1b[1m\n\n LIST OF ALL UNALLOCATED STAFF AND FELLOWS\n" 
+			+ "*" * 50 + "\n"
+			+ "Marie\tmarie@marie.com\tFELLOW\t\x1b[31mOFFICE SPACE\x1b[0m\n" 
+			+ "Pete\tpete@pete\tSTAFF\t\x1b[31mOFFICE SPACE\x1b[0m\n"
+			+ "\x1b[1mMarie\tmarie@marie.com\tFELLOW\t\x1b[32mLIVING SPACE\x1b[0m\n\x1b[0m" )
 		self.assertEqual(output, expected_output)
 			
 	def test_print_unallocated_with_filename_specified(self):
 		self.the_dojo.add_person("Marie", "marie@marie.com","Fellow", "y")
 		self.the_dojo.add_person("Pete","pete@pete","Staff")
 		output = self.the_dojo.print_unallocated("file2")
-		expected_output = "Saving unallocations list to file...\
-		\nData has been successfully saved to file2.txt\n"
+		expected_output = "\x1b[1m \nData has been successfully saved to file2.txt\n \x1b[0m"
 		self.assertEqual(output, expected_output)
 		os.remove("file2.txt")
 
@@ -213,7 +216,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 	def test_load_people_successfully(self):
 		with open("LoadFile.txt", "w+") as input_file:
 			input_file.write("RANDY RANDY@RANDY STAFF\n")
-			input_file.write("TYRESE TY@TY FELLOW Y")
+			input_file.write("TYRESE TY@TY FELLOW Y\n")
 			input_file.write("HEATHER HEATH@HEATH FELLOW")
 
 		initial_staff_count = len(self.the_dojo.all_staff)
@@ -235,13 +238,7 @@ class TestDojoFunctionalities(unittest.TestCase):
 	def test_load_people_filepath_exists(self):
 		self.the_dojo.load_people("LoadFile")
 		self.assertTrue(os.path.isfile("LoadFile.txt"))
-		os.remove("LoadFile.txt")	
-
-	def test_load_people_invalid_entry(self):
-		with open("LoadFile.txt", "w+") as input_file:
-			input_file.write("TYRESE TY@TY FELLOW Y N ")
-		result = self.the_dojo.load_people("LoadFile")
-		self.assertEqual(result, "Invalid entry!")	
+		os.remove("LoadFile.txt")		
 
 	def test_save_state_database_file_exists(self):
 		self.the_dojo.save_state("sampleDB")
@@ -269,7 +266,11 @@ class TestDojoFunctionalities(unittest.TestCase):
 		self.assertEqual(len(self.the_dojo2.all_staff), 1)
 
 	def test_load_state_database_file_exists(self):
-		self.the_dojo.load_state("sampleDB")
+		self.the_dojo.create_room("office", "Red")
+		self.the_dojo.add_person("Pete", "pete@pete", "staff")
+		self.the_dojo.save_state("sampleDB")
+		self.the_dojo2 = Dojo()
+		self.the_dojo2.load_state("sampleDB")
 		self.assertTrue(os.path.isfile("sampleDB.db"))
 		os.remove("sampleDB.db")
 
